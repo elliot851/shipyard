@@ -4,448 +4,665 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Maskinparken</title>
-<meta name="description" content="Soldahls produktfabrik: vem bygger vad, hur långt, och vad maskinerna lärt sig.">
+<meta name="description" content="Vem bygger vad, hur långt, och vad maskinerna lärt sig av varandra.">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#0c0f0d">
+<meta name="theme-color" content="#121417">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Maskinparken">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
+  /* ------------------------------------------------------------------
+     Maskinparken.
+
+     Sidan ar en TAVLA, inte en app. Den ska ga att lasa pa tre sekunder
+     med telefonen i handen: ar allt lugnt, vem bygger vad, hur langt har
+     de kommit. Darfor tabellrader i stallet for kort, och statusfarger
+     som betyder nagot i stallet for en dekorativ accentfarg.
+
+     Typsnitt: Familjen Grotesk for text (svenskritad grotesk med egen
+     karaktar), IBM Plex Mono for allt som ar data: maskin-id, steg,
+     klockslag. Siffror ska stapla sig i kolumn, darav tabular-nums.
+     ------------------------------------------------------------------ */
+
   :root{
-    --ground:#f2f6f2; --surface:#fff; --sunk:#e8ede9; --line:#d5ded7; --line-soft:#e3eae5;
-    --txt:#101610; --muted:#57655b; --faint:#859389;
-    --accent:#00702c; --accent-ink:#00702c; --accent-wash:#e0f0e6;
-    --live:#00702c; --idle:#98a49b; --warn:#9a6a10; --stale:#9c3f36;
-    --warn-ink:#7a5209; --warn-bg:#fbf1de; --warn-line:#ebd6a6;
-    --shadow:0 1px 2px rgba(16,22,16,.05);
+    color-scheme: light dark;
+
+    /* Ytor och linjer. Neutralen dras nagot mot bla-gront sa den inte
+       laser som en obeslutsam gra. */
+    --papper:#f2f3f0;
+    --yta:#ffffff;
+    --yta-2:#e9ebe7;
+    --linje:#d8dbd5;
+    --linje-svag:#e7e9e4;
+
+    /* Text */
+    --blackt:#15181b;
+    --dampat:#565d63;
+    --svagt:#868d93;
+
+    /* Status. Fyra tillstand, fyra farger, ingen av dem ar en varumarkes-
+       accent. Farg = betydelse, inte dekor. */
+    --bygger:#9a5600;
+    --bygger-yta:#f6ecdd;
+    --ledig:#2c6349;
+    --ledig-yta:#e2eee8;
+    --tyst:#9e2f21;
+    --tyst-yta:#f6e4e1;
+    --av:#9aa1a6;
+    --av-yta:#eaece9;
+
+    --fokus:#15181b;
+    --skugga:0 1px 0 rgba(21,24,27,.04);
+    --radie:10px;
   }
-  /* Tre lagen, inte tva: de flesta besokare har "system" och far ingen
-     data-theme alls, medan artefaktvyn stamplar ett explicit val. Darfor
-     bade en gardad mediefraga och en egen [data-theme]-regel. */
+
+  /* Tre lagen: system utan stampel, uttryckligt morkt, uttryckligt ljust. */
   @media (prefers-color-scheme:dark){
     :root:not([data-theme="light"]){
-      --ground:#0c0f0d; --surface:#151917; --sunk:#101413; --line:#232a26; --line-soft:#1c221f;
-      --txt:#e9efea; --muted:#93a098; --faint:#6b776e;
-      --accent:#26bd62; --accent-ink:#8ee2ae; --accent-wash:#14261b;
-      --live:#26bd62; --idle:#5c665e; --warn:#dda434; --stale:#c96155;
-      --warn-ink:#f0c46e; --warn-bg:#2a2110; --warn-line:#4b3a19;
-      --shadow:none;
+      --papper:#101215;
+      --yta:#171a1e;
+      --yta-2:#1e2227;
+      --linje:#262b31;
+      --linje-svag:#1f242a;
+      --blackt:#eaedef;
+      --dampat:#9ba3aa;
+      --svagt:#6d757c;
+      --bygger:#e0a04a;
+      --bygger-yta:#2a2015;
+      --ledig:#63bf93;
+      --ledig-yta:#152420;
+      --tyst:#e07a68;
+      --tyst-yta:#2a1a17;
+      --av:#5b6167;
+      --av-yta:#1d2126;
+      --fokus:#eaedef;
+      --skugga:none;
     }
   }
   :root[data-theme="dark"]{
-    --ground:#0c0f0d; --surface:#151917; --sunk:#101413; --line:#232a26; --line-soft:#1c221f;
-    --txt:#e9efea; --muted:#93a098; --faint:#6b776e;
-    --accent:#26bd62; --accent-ink:#8ee2ae; --accent-wash:#14261b;
-    --live:#26bd62; --idle:#5c665e; --warn:#dda434; --stale:#c96155;
-    --warn-ink:#f0c46e; --warn-bg:#2a2110; --warn-line:#4b3a19;
-    --shadow:none;
+    --papper:#101215;
+    --yta:#171a1e;
+    --yta-2:#1e2227;
+    --linje:#262b31;
+    --linje-svag:#1f242a;
+    --blackt:#eaedef;
+    --dampat:#9ba3aa;
+    --svagt:#6d757c;
+    --bygger:#e0a04a;
+    --bygger-yta:#2a2015;
+    --ledig:#63bf93;
+    --ledig-yta:#152420;
+    --tyst:#e07a68;
+    --tyst-yta:#2a1a17;
+    --av:#5b6167;
+    --av-yta:#1d2126;
+    --fokus:#eaedef;
+    --skugga:none;
   }
+
   *{box-sizing:border-box}
   html,body{max-width:100%; overflow-x:clip}
-  body{margin:0; background:var(--ground); color:var(--txt);
-       font-family:Archivo,system-ui,-apple-system,"Segoe UI",sans-serif;
-       font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased}
-  /* Sidan lases i tva helt olika lagen: en telefon i handen ute pa lagret,
-     och en bred skarm pa kontoret. Bredden vaxer i tre steg i stallet for
-     att stanna pa en kompromissbredd som ar for trang pa den ena och
-     glest utspridd pa den andra. env() haller innehallet borta fran
-     kameraurtaget nar telefonen ligger pa langden. */
-  .app{max-width:1080px; margin:0 auto; display:flex; flex-direction:column; gap:14px;
-       padding:18px max(14px, env(safe-area-inset-right))
-               calc(40px + env(safe-area-inset-bottom))
-               max(14px, env(safe-area-inset-left))}
-  @media (min-width:1240px){ .app{max-width:1200px; gap:16px} }
-  @media (min-width:1600px){ .app{max-width:1360px; gap:18px; padding-top:26px} }
-  .app>*, .grid>*, .panel, .m, .m .body, .idrow, .job, .f, .f>div,
-  .head, .verdict, .verdict>div, .phead, .prog, .segs, .wk{min-width:0}
+  body{
+    margin:0; background:var(--papper); color:var(--blackt);
+    font-family:"Familjen Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,monospace;
+        font-variant-numeric:tabular-nums}
 
-  .top{display:flex; align-items:center; justify-content:space-between; gap:12px}
-  .brand{display:flex; align-items:center; gap:9px; min-width:0}
-  .mark{width:9px; height:22px; border-radius:3px; background:var(--accent); flex:none}
-  h1{margin:0; font-size:20px; font-weight:700; letter-spacing:-.02em}
-  .conn{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted);
-        font-family:"JetBrains Mono",ui-monospace,monospace; white-space:nowrap}
-  .conn .d{width:7px; height:7px; border-radius:50%; background:var(--idle)}
-  .conn.on .d{background:var(--live)}
-  .conn.off .d{background:var(--stale)}
+  .ram{max-width:960px; margin:0 auto;
+       padding:0 max(18px, env(safe-area-inset-right)) 0 max(18px, env(safe-area-inset-left))}
+  /* Bottenluften hor till sidans SISTA block, inte till varje ram. Satt den
+     pa alla och far huvudet ett 56 px stort hal under sig. */
+  .ram--slut{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
+  @media (min-width:1280px){ .ram{max-width:1120px} }
 
-  #upd{display:none; align-items:center; gap:12px; flex-wrap:wrap;
-       background:var(--accent-wash); border:1px solid var(--accent); border-radius:12px; padding:12px 14px}
-  #upd p{margin:0; font-size:13.5px; flex:1 1 180px; min-width:0}
-  #upd button{font:inherit; font-size:13.5px; font-weight:700; border:0; border-radius:9px;
-              background:var(--accent); color:#fff; padding:10px 16px; min-height:44px; cursor:pointer}
+  /* --- Huvud ------------------------------------------------------- */
+  .mast{display:flex; align-items:center; justify-content:space-between;
+        gap:16px; padding:22px 0 16px}
+  .mast__id{display:flex; align-items:center; gap:11px; min-width:0}
+  .mast__mark{flex:none; display:block}
+  .mast__namn{font-size:19px; font-weight:600; letter-spacing:-.015em; white-space:nowrap}
+  .puls{display:flex; align-items:center; gap:7px; font-size:12px;
+        color:var(--dampat); white-space:nowrap}
+  .puls__prick{width:7px; height:7px; border-radius:50%; background:var(--av)}
+  .puls.pa .puls__prick{background:var(--ledig)}
+  .puls.av .puls__prick{background:var(--tyst)}
 
-  /* Installationsknappen: 44 px hog for att ga att traffa med tummen.
-     Chrome och Android ger oss beforeinstallprompt, iOS gor det inte,
-     darfor en textrad i stallet dar. */
-  #install{font:inherit; font-size:14px; font-weight:600; border:0; border-radius:10px;
-           background:var(--accent); color:#fff; padding:12px 18px; min-height:44px;
-           cursor:pointer; align-self:flex-start}
-  #install:focus-visible, #upd button:focus-visible{outline:2px solid var(--txt); outline-offset:2px}
-  .ioshint{margin:0; font-size:13px; color:var(--muted); background:var(--surface);
-           border:1px solid var(--line); border-radius:10px; padding:11px 13px}
-  .ioshint b{color:var(--txt)}
+  /* --- Menyn. Tre ord. Inget mer. ---------------------------------- */
+  .meny{position:sticky; top:0; z-index:20; background:var(--papper);
+        border-bottom:1px solid var(--linje); margin-bottom:30px}
+  .meny__inre{max-width:960px; margin:0 auto; display:flex; gap:4px;
+              padding:0 max(18px, env(safe-area-inset-left))}
+  @media (min-width:1280px){ .meny__inre{max-width:1120px} }
+  .meny a{
+    flex:1 1 0; text-align:center; text-decoration:none; color:var(--dampat);
+    font-size:14px; font-weight:500; letter-spacing:.01em;
+    padding:13px 6px 11px; border-bottom:2px solid transparent;
+    margin-bottom:-1px; min-height:44px; display:flex; align-items:center;
+    justify-content:center;
+  }
+  @media (min-width:640px){ .meny a{flex:0 0 auto; text-align:left; padding-inline:2px; margin-right:26px} }
+  .meny a.har{color:var(--blackt); border-bottom-color:var(--blackt)}
+  .meny a:focus-visible{outline:2px solid var(--fokus); outline-offset:-2px}
 
-  .head{background:var(--surface); border:1px solid var(--line); border-radius:12px;
-        box-shadow:var(--shadow); padding:15px 16px; display:flex; flex-direction:column; gap:13px}
-  /* Pa bred skarm star omdomet och veckomatarna bredvid varandra i stallet
-     for att stapla och lamna en halv skarm tom. */
+  /* --- Sektioner --------------------------------------------------- */
+  section{scroll-margin-top:64px; margin-bottom:38px}
+  .rubrik{display:flex; align-items:baseline; justify-content:space-between;
+          gap:12px; margin:0 0 14px}
+  .rubrik h2{margin:0; font-size:13px; font-weight:600; letter-spacing:.14em;
+             text-transform:uppercase; color:var(--svagt)}
+  .rubrik .rakning{font-size:12px; color:var(--svagt)}
+
+  /* --- Laget ------------------------------------------------------- */
+  .laget{background:var(--yta); border:1px solid var(--linje);
+         border-radius:var(--radie); box-shadow:var(--skugga); overflow:hidden}
+  .laget__dom{display:flex; gap:14px; align-items:flex-start; padding:20px 20px 18px}
+  .laget__flagga{width:4px; align-self:stretch; border-radius:2px; background:var(--ledig); flex:none}
+  .laget.varning .laget__flagga{background:var(--tyst)}
+  .laget.arbete .laget__flagga{background:var(--bygger)}
+  .laget__text strong{display:block; font-size:22px; font-weight:600;
+                      letter-spacing:-.02em; line-height:1.25; text-wrap:balance}
+  .laget__text span{display:block; margin-top:3px; color:var(--dampat); font-size:14.5px}
+
+  .takt{border-top:1px solid var(--linje-svag); padding:16px 20px 18px}
+  .takt__rad{display:flex; align-items:baseline; justify-content:space-between;
+             gap:12px; margin-bottom:9px}
+  .takt__tal{font-size:15px; color:var(--dampat)}
+  .takt__tal b{font-size:26px; font-weight:600; letter-spacing:-.03em; color:var(--blackt)}
+  .takt__mal{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--svagt)}
+  .takt__spar{height:6px; border-radius:3px; background:var(--yta-2); overflow:hidden}
+  .takt__spar i{display:block; height:100%; background:var(--blackt); border-radius:3px; min-width:3px}
+
+  /* --- Maskintavlan ------------------------------------------------
+     Pa dator en riktig tabell med kolumnrubriker, for att ogat ska kunna
+     lasa nedat i en kolumn. Pa telefon staplas varje maskin i stallet,
+     for en femkolumnstabell pa 375 px blir oläslig. */
+  .tavla{background:var(--yta); border:1px solid var(--linje);
+         border-radius:var(--radie); box-shadow:var(--skugga); overflow:hidden}
+  .tavla__huvud{display:none}
+  .rad{display:grid; gap:3px 16px; padding:15px 18px;
+       border-bottom:1px solid var(--linje-svag);
+       grid-template-columns:auto 1fr auto; align-items:baseline}
+  .rad:last-child{border-bottom:0}
+
+  .rad__id{font-size:13px; font-weight:600; letter-spacing:.02em; color:var(--blackt)}
+  .rad__namn{font-size:13px; color:var(--svagt); overflow-wrap:anywhere}
+  .rad__lage{grid-column:3; justify-self:end; font-size:11.5px; font-weight:600;
+             letter-spacing:.07em; text-transform:uppercase; white-space:nowrap;
+             padding:3px 8px; border-radius:20px}
+  .rad__lage[data-lage="bygger"]{color:var(--bygger); background:var(--bygger-yta)}
+  .rad__lage[data-lage="ledig"] {color:var(--ledig);  background:var(--ledig-yta)}
+  .rad__lage[data-lage="tyst"]  {color:var(--tyst);   background:var(--tyst-yta)}
+  .rad__lage[data-lage="av"]    {color:var(--av);     background:var(--av-yta)}
+
+  .rad__uppdrag{grid-column:1 / -1; margin-top:7px; font-size:16px;
+                font-weight:500; letter-spacing:-.01em; overflow-wrap:anywhere}
+  .rad__uppdrag.tom{font-weight:400; color:var(--svagt)}
+  .rad__steg{grid-column:1 / -1; margin-top:8px}
+  .rad__stegrad{display:flex; align-items:baseline; gap:9px; margin-bottom:6px;
+                font-size:13px; color:var(--dampat); flex-wrap:wrap}
+  .rad__stegnr{font-size:12px; font-weight:600; color:var(--blackt)}
+  .stapel{display:flex; gap:2px}
+  .stapel i{flex:1 1 0; height:5px; border-radius:1px; background:var(--yta-2); min-width:0}
+  .stapel i.klar{background:var(--bygger); opacity:.42}
+  .stapel i.nu{background:var(--bygger)}
+  .rad__senast{grid-column:1 / -1; margin-top:9px; font-size:12px; color:var(--svagt)}
+  .rad__krock{grid-column:1 / -1; margin-top:9px; font-size:13px; font-weight:500;
+              color:var(--tyst); background:var(--tyst-yta);
+              border-radius:7px; padding:8px 10px; overflow-wrap:anywhere}
+
   @media (min-width:760px){
-    .head{flex-direction:row; align-items:center; gap:28px; padding:16px 20px}
-    .head .verdict{flex:1 1 auto}
-    .head .wk{flex:0 0 300px}
+    .tavla__huvud, .rad{
+      display:grid;
+      grid-template-columns:52px minmax(96px,.7fr) minmax(0,1.5fr) minmax(150px,1.1fr) 86px;
+      gap:0 18px; align-items:center;
+    }
+    .tavla__huvud{padding:11px 20px; border-bottom:1px solid var(--linje);
+                  background:var(--yta-2)}
+    .tavla__huvud span{font-size:10.5px; font-weight:600; letter-spacing:.12em;
+                       text-transform:uppercase; color:var(--svagt)}
+    .tavla__huvud span:last-child{text-align:right}
+    .rad{padding:16px 20px}
+    .rad__id{grid-column:1; font-size:14px}
+    .rad__namn{grid-column:2; font-size:13.5px; color:var(--dampat)}
+    .rad__uppdrag{grid-column:3; margin-top:0}
+    .rad__steg{grid-column:4; margin-top:0}
+    .rad__stegrad{margin-bottom:5px; font-size:12.5px}
+    .rad__lage{grid-column:5; justify-self:end}
+    .rad__senast{grid-column:3 / -1; margin-top:6px; text-align:right}
+    .rad__krock{grid-column:1 / -1; margin-top:10px}
   }
-  .verdict{display:flex; align-items:center; gap:10px}
-  .verdict .ring{width:10px; height:10px; border-radius:50%; background:var(--live); flex:none;
-                 box-shadow:0 0 0 4px var(--accent-wash)}
-  .verdict.warn .ring{background:var(--warn); box-shadow:0 0 0 4px rgba(154,106,16,.16)}
-  .verdict strong{font-size:15px; font-weight:600; letter-spacing:-.01em}
-  .verdict span{display:block; font-size:12.5px; color:var(--muted); margin-top:1px}
 
-  .wk .wkrow{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:7px}
-  .wk b{font-size:22px; font-weight:700; letter-spacing:-.025em; font-variant-numeric:tabular-nums}
-  .wk b i{font-style:normal; font-size:14px; font-weight:600; color:var(--faint)}
-  .wk .lbl{font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--faint)}
-  .track{height:7px; border-radius:4px; background:var(--sunk); overflow:hidden}
-  .track div{height:100%; background:var(--accent); border-radius:4px; min-width:2px}
-
-  .grid{display:grid; grid-template-columns:1fr; gap:14px}
-  @media (min-width:880px){ .grid{grid-template-columns:minmax(0,1.12fr) minmax(0,1fr); align-items:start} }
-  .panel{background:var(--surface); border:1px solid var(--line); border-radius:12px;
-         box-shadow:var(--shadow); overflow:hidden}
-  .phead{display:flex; align-items:baseline; justify-content:space-between; gap:10px;
-         padding:13px 16px 11px; border-bottom:1px solid var(--line-soft)}
-  .phead h2{margin:0; font-size:11px; font-weight:700; text-transform:uppercase;
-            letter-spacing:.1em; color:var(--faint)}
-  .phead .c{font-size:11px; color:var(--faint); font-family:"JetBrains Mono",ui-monospace,monospace;
-            flex:0 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-
-  .m{display:grid; grid-template-columns:3px 1fr auto; gap:0 12px; align-items:start;
-     padding:13px 16px 13px 0; border-bottom:1px solid var(--line-soft)}
-  .m:last-child{border-bottom:0}
-  .m .bar{align-self:stretch; margin:-13px 0; background:var(--idle)}
-  .m.live .bar{background:var(--live)}
-  .m.warn .bar{background:var(--warn)}
-  .m.stale .bar{background:var(--stale)}
-  .m .body{padding-left:13px}
-  .idrow{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap}
-  .id{font-family:"JetBrains Mono",ui-monospace,monospace; font-weight:700; font-size:13px}
-  .job{font-weight:600; letter-spacing:-.01em; overflow-wrap:anywhere}
-  .job.free{font-weight:400; color:var(--faint)}
-  .note{font-size:12.5px; color:var(--muted); margin-top:3px; overflow-wrap:anywhere}
-  .fp{font-family:"JetBrains Mono",ui-monospace,monospace; font-size:10.5px;
-      color:var(--faint); letter-spacing:.04em; border:1px solid var(--line);
-      border-radius:4px; padding:1px 5px}
-  .dup{margin-top:6px; font-size:12.5px; font-weight:600; color:var(--warn-ink);
-       background:var(--warn-bg); border:1px solid var(--warn-line);
-       border-radius:6px; padding:6px 9px; overflow-wrap:anywhere}
-  .m.dupd .bar{background:var(--warn)}
-  .seen{font-family:"JetBrains Mono",ui-monospace,monospace; font-size:11.5px;
-        color:var(--faint); white-space:nowrap; padding-top:2px}
-  .prog{margin-top:8px}
-  .prog .lbl{font-size:11.5px; color:var(--muted); margin-bottom:5px;
-             font-family:"JetBrains Mono",ui-monospace,monospace; overflow-wrap:anywhere}
-  .prog .lbl b{color:var(--accent-ink); font-weight:700}
-  .segs{display:flex; gap:3px}
-  .segs i{flex:1; height:4px; border-radius:2px; background:var(--sunk); min-width:0}
-  .segs i.on,.segs i.now{background:var(--accent)}
-  .segs i.now{box-shadow:0 0 0 2px var(--accent-wash)}
-
-  .f{display:grid; grid-template-columns:auto 1fr; gap:11px; padding:12px 16px;
-     border-bottom:1px solid var(--line-soft)}
-  .f:last-child{border-bottom:0}
-  .tag{font-family:"JetBrains Mono",ui-monospace,monospace; font-size:10px; font-weight:700;
-       background:var(--accent-wash); color:var(--accent-ink); padding:3px 7px; border-radius:5px; height:fit-content}
-  .f .t{font-size:14px; line-height:1.45; overflow-wrap:anywhere}
-  .f .w{font-family:"JetBrains Mono",ui-monospace,monospace; font-size:11px; color:var(--faint); margin-top:3px}
-  /* Pa dator far lardomslistan rulla i sin egen ruta, sa maskinerna alltid
-     syns hogst upp. Hojden foljer fonstret i stallet for en fast siffra som
-     blir for hog pa en laptop och for lag pa en stor skarm. */
-  @media (min-width:880px){
-    #feedList{max-height:min(680px, calc(100vh - 270px)); overflow-y:auto; overscroll-behavior:contain}
+  /* --- Steglegenden ------------------------------------------------ */
+  .legend{margin-top:14px; background:var(--yta); border:1px solid var(--linje);
+          border-radius:var(--radie); overflow:hidden}
+  .legend > summary{
+    list-style:none; cursor:pointer; padding:14px 18px; min-height:44px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    font-size:14px; font-weight:500; color:var(--dampat);
   }
-  @media (min-width:1240px){
-    h1{font-size:22px}
-    .phead{padding:15px 20px 12px}
-    .m{padding:15px 20px 15px 0}
-    .m .body{padding-left:16px}
-    .f{padding:14px 20px}
-    .lockbar{padding:14px 20px}
-    footer{font-size:13px}
-  }
-  .empty{padding:16px; color:var(--faint); font-size:13.5px}
-  .lockbar{display:flex; align-items:center; gap:9px; flex-wrap:wrap; padding:12px 16px}
-  .lock{font-family:"JetBrains Mono",ui-monospace,monospace; font-size:12px;
-        border:1px solid var(--warn); color:var(--warn); padding:3px 9px; border-radius:6px}
-  .lockbar .ok{color:var(--faint); font-size:13px}
-  footer{color:var(--faint); font-size:12.5px; line-height:1.65; padding:0 2px}
-  footer code{font-family:"JetBrains Mono",ui-monospace,monospace; background:var(--sunk);
-              padding:1px 5px; border-radius:4px; font-size:11.5px}
-  @media (max-width:420px){
-    .app{padding-left:12px; padding-right:12px; gap:12px}
-    .head{padding:13px}
-    .phead{padding:12px 13px 10px}
-    .phead .c{max-width:45%}
-    .m{padding-right:13px} .m .body{padding-left:11px}
-    .f{padding:11px 13px} .lockbar{padding:11px 13px}
-  }
+  .legend > summary::-webkit-details-marker{display:none}
+  .legend > summary::after{content:"+"; font-family:"IBM Plex Mono",monospace;
+                           font-size:16px; color:var(--svagt)}
+  .legend[open] > summary::after{content:"–"}
+  .legend > summary:focus-visible{outline:2px solid var(--fokus); outline-offset:-2px}
+  .legend__lista{margin:0; padding:0 18px 16px; border-top:1px solid var(--linje-svag);
+                 padding-top:14px; list-style:none;
+                 display:grid; grid-template-columns:1fr; gap:7px}
+  @media (min-width:700px){ .legend__lista{grid-template-columns:1fr 1fr; gap:8px 26px} }
+  .legend__lista li{display:flex; gap:11px; font-size:14px; color:var(--dampat)}
+  .legend__lista b{flex:none; width:22px; font-family:"IBM Plex Mono",monospace;
+                   font-size:12.5px; font-weight:600; color:var(--svagt)}
+
+  /* --- Loggen ------------------------------------------------------ */
+  .logg{background:var(--yta); border:1px solid var(--linje);
+        border-radius:var(--radie); box-shadow:var(--skugga); overflow:hidden}
+  .post{display:grid; grid-template-columns:auto 1fr; gap:4px 13px;
+        padding:14px 18px; border-bottom:1px solid var(--linje-svag)}
+  .post:last-child{border-bottom:0}
+  .post__vem{font-size:11.5px; font-weight:600; letter-spacing:.04em; color:var(--svagt);
+             padding-top:2px}
+  .post__text{font-size:15px; line-height:1.45; overflow-wrap:anywhere}
+  .post__nar{grid-column:2; font-size:12px; color:var(--svagt)}
+  @media (min-width:760px){ .logg__rulle{max-height:min(560px, calc(100vh - 220px));
+                                         overflow-y:auto; overscroll-behavior:contain} }
+
+  .tomt{padding:18px; color:var(--svagt); font-size:14.5px}
+
+  /* --- Notiser ----------------------------------------------------- */
+  .notis{display:none; align-items:center; gap:13px; flex-wrap:wrap;
+         background:var(--yta); border:1px solid var(--blackt);
+         border-radius:var(--radie); padding:14px 16px; margin-bottom:24px}
+  .notis p{margin:0; font-size:14.5px; flex:1 1 200px; min-width:0}
+  .knapp{font:inherit; font-size:14px; font-weight:600; border:1px solid var(--blackt);
+         background:var(--blackt); color:var(--papper); border-radius:8px;
+         padding:11px 17px; min-height:44px; cursor:pointer}
+  .knapp:focus-visible{outline:2px solid var(--fokus); outline-offset:2px}
+  #installera{display:block; margin-bottom:24px}
+  .tips{margin:0 0 24px; font-size:14px; color:var(--dampat); background:var(--yta);
+        border:1px solid var(--linje); border-radius:var(--radie); padding:13px 15px}
+  .tips b{color:var(--blackt); font-weight:600}
+
+  footer{margin-top:34px; padding-top:20px; border-top:1px solid var(--linje);
+         color:var(--svagt); font-size:13.5px; line-height:1.6}
+  footer p{margin:0 0 8px} footer p:last-child{margin-bottom:0}
+  footer code{font-family:"IBM Plex Mono",monospace; font-size:12.5px;
+              background:var(--yta-2); padding:1px 5px; border-radius:4px}
+
   @media (prefers-reduced-motion:no-preference){
-    .m.live .bar{animation:br 3.4s ease-in-out infinite}
-    @keyframes br{0%,100%{opacity:1}50%{opacity:.42}}
+    .rad__lage[data-lage="bygger"]{animation:andas 3.6s ease-in-out infinite}
+    @keyframes andas{0%,100%{opacity:1} 50%{opacity:.62}}
   }
 </style>
 </head>
 <body>
-<div class="app">
-  <div class="top">
-    <div class="brand"><span class="mark"></span><h1>Maskinparken</h1></div>
-    <div class="conn" id="conn"><span class="d"></span><span id="connTxt">hämtar</span></div>
+
+<div class="ram">
+  <header class="mast">
+    <div class="mast__id">
+      <svg class="mast__mark" width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+        <rect x="0" y="4" width="5" height="14" rx="1.2" fill="currentColor"/>
+        <rect x="6.5" y="0" width="5" height="22" rx="1.2" fill="currentColor" opacity=".55"/>
+        <rect x="13" y="7" width="5" height="11" rx="1.2" fill="currentColor" opacity=".3"/>
+      </svg>
+      <span class="mast__namn">Maskinparken</span>
+    </div>
+    <div class="puls" id="puls"><span class="puls__prick"></span><span id="pulsTxt">hämtar</span></div>
+  </header>
+</div>
+
+<nav class="meny" aria-label="Sidans delar">
+  <div class="meny__inre">
+    <a href="#laget" class="har">Läget</a>
+    <a href="#maskiner">Maskiner</a>
+    <a href="#loggen">Loggen</a>
+  </div>
+</nav>
+
+<div class="ram ram--slut">
+
+  <div class="notis" id="nyVersion">
+    <p><b>Ny version finns.</b> Sidan har uppdaterats sedan du öppnade den.</p>
+    <button class="knapp" id="nyVersionKnapp" type="button">Uppdatera</button>
   </div>
 
-  <div id="upd">
-    <p><b>Ny version finns.</b> Maskinparken har uppdaterats sedan du öppnade sidan.</p>
-    <button id="updBtn" type="button">Uppdatera</button>
-  </div>
+  <section id="laget">
+    <div class="rubrik"><h2>Läget</h2><span class="rakning" id="lagetTid"></span></div>
+    <div class="laget" id="lagetKort">
+      <div class="laget__dom">
+        <span class="laget__flagga"></span>
+        <div class="laget__text">
+          <strong id="lagetRubrik">Läser av parken</strong>
+          <span id="lagetUnder">Hämtar status från maskinerna</span>
+        </div>
+      </div>
+      <div class="takt">
+        <div class="takt__rad">
+          <span class="takt__tal"><b id="taktTal" class="mono">–</b> av <span id="taktMal">50</span></span>
+          <span class="takt__mal">Produkter denna vecka</span>
+        </div>
+        <div class="takt__spar"><i id="taktSpar" style="width:0%"></i></div>
+      </div>
+    </div>
+  </section>
 
-  <button id="install" type="button" hidden>Lägg till på hemskärmen</button>
-  <p id="ioshint" class="ioshint" hidden>
-    Vill du ha den som app: tryck på <b>Dela</b> längst ner och välj
-    <b>Lägg till på hemskärmen</b>.
+  <section id="maskiner">
+    <div class="rubrik"><h2>Maskiner</h2><span class="rakning" id="maskinRakning"></span></div>
+    <div class="tavla">
+      <div class="tavla__huvud">
+        <span>Id</span><span>Dator</span><span>Uppdrag</span><span>Steg</span><span>Läge</span>
+      </div>
+      <div id="tavla"></div>
+    </div>
+    <details class="legend">
+      <summary>Vad betyder stegen?</summary>
+      <ul class="legend__lista" id="legend"></ul>
+    </details>
+  </section>
+
+  <section id="loggen">
+    <div class="rubrik"><h2>Loggen</h2><span class="rakning" id="loggRakning"></span></div>
+    <div class="logg"><div class="logg__rulle" id="logg"><div class="tomt">Hämtar…</div></div></div>
+  </section>
+
+  <button class="knapp" id="installera" type="button" hidden>Lägg till på hemskärmen</button>
+  <p class="tips" id="iosTips" hidden>
+    Vill du ha den som app: tryck på <b>Dela</b> längst ner och välj <b>Lägg till på hemskärmen</b>.
   </p>
 
-  <div class="head">
-    <div class="verdict" id="verdict">
-      <span class="ring"></span>
-      <div><strong id="vTitle">Läser av fabriken</strong><span id="vSub">Hämtar status</span></div>
-    </div>
-    <div class="wk">
-      <div class="wkrow">
-        <b id="wkNum">–<i> av 50</i></b>
-        <span class="lbl">produkter denna vecka</span>
-      </div>
-      <div class="track"><div id="wkBar" style="width:0%"></div></div>
-    </div>
-  </div>
-
-  <div class="grid">
-    <section class="panel">
-      <div class="phead"><h2>Maskiner</h2><span class="c" id="mCount"></span></div>
-      <div id="fleet"></div>
-      <div class="lockbar" id="lockbar"><span class="ok">Inga lås aktiva</span></div>
-    </section>
-    <section class="panel">
-      <div class="phead"><h2>Delade lärdomar</h2><span class="c" id="lCount"></span></div>
-      <div id="feedList"><div class="empty">Hämtar…</div></div>
-    </section>
-  </div>
-
   <footer>
-    Alla maskiner kör samma skill mot repot <code>soldahl-machine</code> och delar minne, facit och runbook.
-    En produkt claimas atomärt via git, så två maskiner kan aldrig bygga samma sak.
-    Varje skill har sin egen stegkedja ur runbooken. Sidan byggs om vid varje push.
+    <p>Alla maskiner kör samma skill mot repot <code>soldahl-machine</code> och delar minne,
+       facit och runbook. En produkt claimas atomärt via git, så två maskiner kan aldrig
+       bygga samma sak.</p>
+    <p>Koden bredvid datornamnet är ett fingeravtryck av maskinen. Två maskiner med samma
+       kod sitter på samma dator, och då ger de ingen extra kapacitet.</p>
   </footer>
 </div>
 
 <script>
 (function(){
-  var BUILD=null, MAL=50;
+  var BYGGE = null, MAL = 50, STEGNAMN = [];
 
-  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){
     return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
-  function minAgo(iso){ if(!iso) return null; var t=new Date(iso).getTime();
-    return isNaN(t)?null:(Date.now()-t)/60000; }
-  function sedan(iso){ var m=minAgo(iso); if(m===null) return "–";
-    if(m<1) return "nyss"; if(m<60) return Math.floor(m)+" min";
-    var h=m/60; if(h<24) return Math.floor(h)+" h"; return Math.floor(h/24)+" dygn"; }
-  function tillstand(m){ var x=minAgo(m.updated); if(x===null) return "off";
-    if(x>360) return "stale"; if(!m.product) return "idle"; return x>45?"warn":"live"; }
+  function minSedan(iso){ if(!iso) return null;
+    var t = new Date(iso).getTime(); return isNaN(t) ? null : (Date.now()-t)/60000; }
+  function sedan(iso){
+    var m = minSedan(iso); if(m===null) return "aldrig";
+    if(m < 1) return "nyss";
+    if(m < 60) return Math.floor(m) + " min sedan";
+    var h = m/60; if(h < 24) return Math.floor(h) + " h sedan";
+    return Math.floor(h/24) + " dygn sedan";
+  }
+  // Fyra tillstand, och ordningen ar viktig: en maskin som varit tyst i over
+  // sex timmar ar "tyst" aven om den har ett uppdrag, for da ska claimet kunna
+  // overtas av nagon annan.
+  function lage(m){
+    var x = minSedan(m.updated);
+    if(x === null) return "av";
+    if(x > 360) return "tyst";
+    return m.product ? "bygger" : "ledig";
+  }
+  var LAGETEXT = {bygger:"Bygger", ledig:"Ledig", tyst:"Tyst", av:"Ej inkopplad"};
 
-  function rita(d){
-    MAL=d.mal||50;
-    var live=0, stale=0, kopplade=0;
-    document.getElementById("fleet").innerHTML=(d.maskiner||[]).map(function(m){
-      var st=tillstand(m);
-      if(st!=="off") kopplade++;
-      if(st==="live") live++;
-      if(st==="stale") stale++;
-      var cls=(st==="live"||st==="warn"||st==="stale")?st:"";
-      var job=m.product?'<span class="job">'+esc(m.product)+'</span>'
-                       :'<span class="job free">'+(st==="off"?"ej inkopplad":"ledig")+'</span>';
-      var extra="";
-      var steg=m.stegnamn||[];
-      if(m.product && typeof m.steg==="number" && steg.length){
-        var sista=steg.length-1;
-        var n=Math.max(0,Math.min(sista,m.steg)), segs="";
-        for(var i=0;i<steg.length;i++) segs+='<i class="'+(i<n?"on":(i===n?"now":""))+'"></i>';
-        extra='<div class="prog"><div class="lbl">STEG <b>'+n+'</b> av '+sista+' · '+esc(steg[n]||"")+
-              '</div><div class="segs">'+segs+'</div></div>';
-      } else if(m.note){ extra='<div class="note">'+esc(m.note)+'</div>'; }
-      // Två maskin-id på samma dator ger noll extra kapacitet, och det syns
-      // inte i git. Därför skriks det ut här i stället för att gissas.
-      var dup=m.delad_dator||[];
-      if(dup.length){ extra+='<div class="dup">Samma dator som '+esc(dup.join(", "))+
-                             '. Inget extra tak, flytta till en egen dator.</div>'; }
-      var fp=m.avtryck?'<span class="fp" title="Fingeravtryck av datorn. Olika värde = olika dator.">'+esc(m.avtryck)+'</span>':"";
-      return '<div class="m '+cls+(dup.length?" dupd":"")+'"><div class="bar"></div><div class="body">'+
-             '<div class="idrow"><span class="id">'+esc(m.machine)+'</span>'+fp+job+'</div>'+
-             extra+'</div><div class="seen">'+esc(sedan(m.updated))+'</div></div>';
+  function ritaMaskiner(d){
+    var maskiner = d.maskiner || [];
+    var bygger = 0, tysta = 0, inkopplade = 0;
+
+    document.getElementById("tavla").innerHTML = maskiner.map(function(m){
+      var l = lage(m);
+      if(l !== "av") inkopplade++;
+      if(l === "bygger") bygger++;
+      if(l === "tyst") tysta++;
+
+      var namn = m.namn || (m.avtryck ? "" : "–");
+      var avtryck = m.avtryck ? ' <span class="mono" style="opacity:.7">' + esc(m.avtryck) + "</span>" : "";
+
+      var uppdrag = m.product
+        ? '<div class="rad__uppdrag">' + esc(m.product) + "</div>"
+        : '<div class="rad__uppdrag tom">' + (l === "av" ? "ingen dator inkopplad" : "väntar på nästa produkt") + "</div>";
+
+      var steg = "", namnlista = m.stegnamn || STEGNAMN;
+      if(m.product && typeof m.steg === "number" && namnlista.length){
+        var sista = namnlista.length - 1;
+        var n = Math.max(0, Math.min(sista, m.steg));
+        var pinnar = "";
+        for(var i = 0; i < namnlista.length; i++){
+          pinnar += '<i class="' + (i < n ? "klar" : (i === n ? "nu" : "")) + '"></i>';
+        }
+        steg = '<div class="rad__steg"><div class="rad__stegrad">' +
+               '<span class="rad__stegnr mono">STEG ' + n + "/" + sista + "</span>" +
+               "<span>" + esc(namnlista[n] || "") + "</span></div>" +
+               '<div class="stapel">' + pinnar + "</div></div>";
+      } else if(m.product){
+        steg = '<div class="rad__steg"><div class="rad__stegrad">' +
+               "<span>steg ej rapporterat</span></div></div>";
+      } else {
+        steg = '<div class="rad__steg"></div>';
+      }
+
+      var krock = (m.delad_dator && m.delad_dator.length)
+        ? '<div class="rad__krock">Samma dator som ' + esc(m.delad_dator.join(", ")) +
+          ". Inget extra tak, flytta till en egen dator.</div>"
+        : "";
+
+      // Ordningen ar den mobila laseordningen: id och dator, lage till hoger
+      // pa samma rad, sedan uppdrag, steg och sist nar den horde av sig.
+      // Pa dator flyttas allt till sina kolumner med grid-column.
+      return '<div class="rad">' +
+               '<span class="rad__id mono">' + esc(m.machine) + "</span>" +
+               '<span class="rad__namn">' + esc(namn) + avtryck + "</span>" +
+               '<span class="rad__lage" data-lage="' + l + '">' + LAGETEXT[l] + "</span>" +
+               uppdrag + steg +
+               '<span class="rad__senast mono">' + esc(sedan(m.updated)) + "</span>" +
+               krock +
+             "</div>";
     }).join("");
-    document.getElementById("mCount").textContent=kopplade+" av "+(d.maskiner||[]).length+" inkopplade";
 
-    var las=d.las||[];
-    document.getElementById("lockbar").innerHTML=las.length
-      ? las.map(function(l){ return '<span class="lock">'+esc(l.name)+" · "+esc(l.holder)+'</span>'; }).join("")
-      : '<span class="ok">Inga lås aktiva</span>';
-
-    var v=document.getElementById("verdict"), t=document.getElementById("vTitle"), s=document.getElementById("vSub");
-    v.classList.remove("warn");
-    if(las.length){ v.classList.add("warn"); t.textContent="Lås aktivt";
-      s.textContent=las[0].holder+" ändrar en delad resurs, övriga väntar"; }
-    else if(stale){ v.classList.add("warn");
-      t.textContent=stale+(stale===1?" maskin är tyst":" maskiner är tysta");
-      s.textContent="Inget livstecken på över sex timmar. Claim kan övertas."; }
-    else if(live){ t.textContent=live===1?"En maskin bygger":live+" maskiner bygger";
-      s.textContent="Inga lås, inga krockar."; }
-    else if(kopplade){ t.textContent="Allt lugnt";
-      s.textContent=kopplade+(kopplade===1?" maskin inkopplad och ledig":" maskiner inkopplade och lediga"); }
-    else { t.textContent="Ingen maskin inkopplad"; s.textContent="Kör setup-machine.ps1 på en dator."; }
-
-    var klara=d.klara||0, pct=Math.max(0,Math.min(100,Math.round(klara/MAL*100)));
-    document.getElementById("wkNum").innerHTML=klara+'<i> av '+MAL+'</i>';
-    document.getElementById("wkBar").style.width=pct+"%";
-
-    var l=d.lardomar||[];
-    document.getElementById("feedList").innerHTML=l.length
-      ? l.map(function(x){ return '<div class="f"><span class="tag">'+esc(x.machine)+'</span><div>'+
-          '<div class="t">'+esc(x.text)+'</div><div class="w">'+esc(sedan(x.when))+' sedan</div></div></div>'; }).join("")
-      : '<div class="empty">Inga lärdomar delade än.</div>';
-    document.getElementById("lCount").textContent=l.length?"senaste "+l.length:"";
+    document.getElementById("maskinRakning").textContent =
+      inkopplade + " av " + maskiner.length + " inkopplade";
+    ritaLaget(d, bygger, tysta, inkopplade);
   }
 
-  // Fylls av build.py i den fristaende versionen (artefakt/offline). Pa den
-  // hostade sidan ligger den kvar som null och data hamtas live fran data.json.
-  var INBAKAT = {"build": "3581ee4", "byggd": "2026-09-08T23:29:52Z", "floden": {"produktsida": ["Produkten", "Underlag", "COGS och erbjudande", "Produktbilder", "Produktsidan", "A/B/C/D", "Meta-annonscopy", "Image ads", "Overlamning till Rotche"]}, "maskiner": [{"machine": "M1", "product": "", "steg": null, "flode": "produktsida", "stegnamn": ["Produkten", "Underlag", "COGS och erbjudande", "Produktbilder", "Produktsidan", "A/B/C/D", "Meta-annonscopy", "Image ads", "Overlamning till Rotche"], "note": "", "updated": "2026-09-08T23:29:46Z", "avtryck": "17d79e", "delad_dator": []}, {"machine": "M2", "product": "soldahl-inspektionskamera", "steg": null, "flode": "produktsida", "stegnamn": ["Produkten", "Underlag", "COGS och erbjudande", "Produktbilder", "Produktsidan", "A/B/C/D", "Meta-annonscopy", "Image ads", "Overlamning till Rotche"], "note": "", "updated": "2026-09-08T21:13:14Z", "avtryck": "ca8d9a", "delad_dator": []}, {"machine": "M3", "product": "", "steg": null, "flode": "produktsida", "stegnamn": ["Produkten", "Underlag", "COGS och erbjudande", "Produktbilder", "Produktsidan", "A/B/C/D", "Meta-annonscopy", "Image ads", "Overlamning till Rotche"], "note": "", "updated": "", "avtryck": "", "delad_dator": []}, {"machine": "M4", "product": "", "steg": null, "flode": "produktsida", "stegnamn": ["Produkten", "Underlag", "COGS och erbjudande", "Produktbilder", "Produktsidan", "A/B/C/D", "Meta-annonscopy", "Image ads", "Overlamning till Rotche"], "note": "", "updated": "", "avtryck": "", "delad_dator": []}, {"machine": "M5", "product": "", "steg": null, "flode": "produktsida", "stegnamn": ["Produkten", "Underlag", "COGS och erbjudande", "Produktbilder", "Produktsidan", "A/B/C/D", "Meta-annonscopy", "Image ads", "Overlamning till Rotche"], "note": "", "updated": "", "avtryck": "", "delad_dator": []}], "lardomar": [{"machine": "M1", "text": "Minne: kolla sjalv om Elliot ar inloggad, vanta aldrig pa besked. Enforce HTTPS pa och shipyard.soldahl.se verifierad", "when": "2026-09-09T01:29:46+02:00"}, {"machine": "M1", "text": "Egen doman: shipyard.soldahl.se, CNAME inlagd hos Strato och DOMAN.txt satt sa alla maskiner publicerar mot samma adress", "when": "2026-09-09T01:27:45+02:00"}, {"machine": "M1", "text": "Minne: Pages-uppsattningen, varfor tva repon, och de tva fallorna (git-identitet i frisk klon, manifest maste vara samma ursprung)", "when": "2026-09-08T23:40:44+02:00"}, {"machine": "M1", "text": "robots.txt pa den publika sidan, och README med hela Pages-uppsattningen inklusive exakt DNS-post for egen doman", "when": "2026-09-08T23:40:14+02:00"}, {"machine": "M1", "text": "GitHub Pages: bara den byggda sidan gar till ett separat PUBLIKT repo (elliot851/shipyard), privata repot rors inte. Publiceringen hanger med i varje push", "when": "2026-09-08T23:38:34+02:00"}, {"machine": "M1", "text": "Maskinparken mobil- och datoranpassad: bredden vaxer i tre steg, huvudraden ligger i rad pa bred skarm, installationsknapp tillbaka och manifestet flyttat fran data till blob sa Chrome faktiskt erbjuder installation", "when": "2026-09-08T23:18:44+02:00"}, {"machine": "M2", "text": "hej fran GNUGGDATORN2, maskinen ar uppe", "when": "2026-09-08T23:13:14+02:00"}, {"machine": "M1", "text": "Minne: tva nya maskinparks-fallor (klon pa samma dator ser ut som riktig maskin, git add -A raderar delad kunskap) och att M2 nu ar bevisat uppe pa eget konto", "when": "2026-09-08T22:53:39+02:00"}, {"machine": "M1", "text": "En sida i stallet for tva: samma HTML kor hostad (data.json), som artefakt (delad databas) och fristaende (inbakad ogonblicksbild). Fingeravtryck och varning for tva maskin-id pa samma dator", "when": "2026-09-08T22:52:35+02:00"}, {"machine": "M1", "text": "Steg och notering skrivs nu till status/ sa oversiktssidan visar hur langt varje maskin kommit, och nollstalls vid ny produkt", "when": "2026-09-08T22:47:29+02:00"}, {"machine": "M1", "text": "framsteg soldahl-testkoll STEG 3", "when": "2026-09-08T22:47:10+02:00"}, {"machine": "M1", "text": "Sparr mot kunskapsforlust i push, hello-kommando med datorfingeravtryck, dashboard varnar for tva maskin-id pa samma dator, aterstaller underlagsbygget.md som M2 raderade av misstag", "when": "2026-09-08T22:44:52+02:00"}, {"machine": "M1", "text": "hej fran GNUGGDATORN, maskinen ar uppe", "when": "2026-09-08T22:43:27+02:00"}, {"machine": "M2", "text": "framsteg soldahl-inspektionskamera STEG 1", "when": "2026-09-08T22:25:32+02:00"}, {"machine": "M2", "text": "framsteg soldahl-inspektionskamera STEG 0", "when": "2026-09-08T22:18:59+02:00"}, {"machine": "M2", "text": "M2 onboardad pa unholdr-kontot: setup + sync verifierat, MACHINES.md ifylld", "when": "2026-09-08T21:55:48+02:00"}, {"machine": "M1", "text": "Larddom: min datorkontroll galler bara maskinen jag kor pa, verifiera pastadda kopplingar och leverera via mejl i stallet", "when": "2026-09-08T21:39:07+02:00"}, {"machine": "M1", "text": "Minne: klicka Logga in nar uppgifter redan ligger forifyllda; MEMORY.md uppdaterad infor onboarding av M2", "when": "2026-09-08T21:37:13+02:00"}, {"machine": "M1", "text": "Onboarding for ny dator: NY-DATOR.txt, forberedelsekontroll, varning om lank pekar mot fel repo", "when": "2026-09-08T17:51:55+02:00"}, {"machine": "M1", "text": "Overlamning mellan datorer: builds/ med underlag, progress/resume, och verifiering mot Shopify som sanning", "when": "2026-09-08T17:25:44+02:00"}, {"machine": "M1", "text": "framsteg soldahl-kattpalstrimmer STEG 8", "when": "2026-09-08T17:24:10+02:00"}, {"machine": "M1", "text": "Parbygge kort: temat orort av tva samtidiga byggen, kodkrock avvisas hart av Shopify", "when": "2026-09-08T16:00:11+02:00"}, {"machine": "M1", "text": "Temakollisionen borttagen: delad produktmall, jamforelserubrik i metafalt, ingen temaskrivning per bygge", "when": "2026-09-08T12:31:03+02:00"}, {"machine": "M1", "text": "Skala for fler skills och fler maskiner: flottan upptacks dynamiskt, varje skill har egen stegkedja", "when": "2026-09-08T12:18:15+02:00"}, {"machine": "M1", "text": "Fabriken: uppsattningsguide for Cloudflare Pages + Access", "when": "2026-09-08T11:22:35+02:00"}, {"machine": "M1", "text": "Fabriken: publik statussida byggd ur repot (site/), BOM-fix i statuslasning och sync", "when": "2026-09-08T11:21:48+02:00"}, {"machine": "M1", "text": "PROTOCOL sektion 4: guard-kollisionen ar borta, laset galler ovriga delade temafiler", "when": "2026-09-08T04:37:57+02:00"}, {"machine": "M1", "text": "Maskinparken: oversiktssidan inskriven i protokollet, maskinerna rapporterar in dit", "when": "2026-09-08T04:37:05+02:00"}, {"machine": "M1", "text": "MEMORY.md: git-atomart claim i maskinpark-blocket", "when": "2026-09-08T04:29:25+02:00"}, {"machine": "M1", "text": "Minne: maskinpark-systemet + de fyra fallorna testet hittade", "when": "2026-09-08T04:28:48+02:00"}], "las": [], "klara": 4, "mal": 50};
+  function ritaLaget(d, bygger, tysta, inkopplade){
+    var kort = document.getElementById("lagetKort");
+    var rub = document.getElementById("lagetRubrik");
+    var und = document.getElementById("lagetUnder");
+    kort.classList.remove("varning", "arbete");
 
-  // Datan kan komma tre vagar, i fallande ordning:
-  //   1. data.json bredvid sidan          hostad version, alltid farskast
-  //   2. artefaktens delade databas       nar sidan kors som Claude-artefakt
-  //   3. inbakad ogonblicksbild           fristaende kopia, utan natet
-  // Samma HTML i alla tre. Tva separata sidor skulle glida isar, och det ar
-  // precis den sortens dubbelarbete hela maskinparken finns for att slippa.
+    var las = d.las || [];
+    if(las.length){
+      kort.classList.add("varning");
+      rub.textContent = "Lås aktivt";
+      und.textContent = las[0].holder + " ändrar en delad resurs. Övriga väntar.";
+    } else if(tysta){
+      kort.classList.add("varning");
+      rub.textContent = tysta === 1 ? "En maskin är tyst" : tysta + " maskiner är tysta";
+      und.textContent = "Inget livstecken på över sex timmar. Deras claim kan övertas.";
+    } else if(bygger){
+      kort.classList.add("arbete");
+      rub.textContent = bygger === 1 ? "En maskin bygger" : bygger + " maskiner bygger";
+      und.textContent = "Inga lås, inga krockar.";
+    } else if(inkopplade){
+      rub.textContent = "Allt lugnt";
+      und.textContent = inkopplade + (inkopplade === 1
+        ? " maskin är inkopplad och väntar på nästa produkt."
+        : " maskiner är inkopplade och väntar på nästa produkt.");
+    } else {
+      rub.textContent = "Ingen maskin inkopplad";
+      und.textContent = "Kör setup-machine.ps1 på en dator för att koppla in den.";
+    }
+
+    MAL = d.mal || 50;
+    var klara = d.klara || 0;
+    document.getElementById("taktTal").textContent = klara;
+    document.getElementById("taktMal").textContent = MAL;
+    document.getElementById("taktSpar").style.width =
+      Math.max(0, Math.min(100, (klara / MAL) * 100)) + "%";
+    document.getElementById("lagetTid").textContent = "uppdaterad " + nu();
+  }
+
+  function nu(){
+    var d = new Date();
+    return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+  }
+
+  function ritaLogg(d){
+    var rader = d.lardomar || [];
+    document.getElementById("logg").innerHTML = rader.length
+      ? rader.map(function(r){
+          return '<div class="post"><span class="post__vem mono">' + esc(r.machine || "?") + "</span>" +
+                 '<span class="post__text">' + esc(r.text) + "</span>" +
+                 '<span class="post__nar mono">' + esc(sedan(r.when)) + "</span></div>";
+        }).join("")
+      : '<div class="tomt">Inga lärdomar delade än.</div>';
+    document.getElementById("loggRakning").textContent =
+      rader.length ? "senaste " + rader.length : "";
+  }
+
+  function ritaLegend(d){
+    var namn = (d.floden && d.floden["produktsida"]) || STEGNAMN;
+    if(!namn.length) return;
+    STEGNAMN = namn;
+    document.getElementById("legend").innerHTML = namn.map(function(n, i){
+      return "<li><b>" + i + "</b><span>" + esc(n) + "</span></li>";
+    }).join("");
+  }
+
+  function rita(d){
+    ritaLegend(d);
+    ritaMaskiner(d);
+    ritaLogg(d);
+  }
+
+  function puls(lage, text){
+    var p = document.getElementById("puls");
+    p.className = "puls " + lage;
+    document.getElementById("pulsTxt").textContent = text;
+  }
+
+  // Fylls av build.py i den fristaende versionen. Pa den hostade sidan ligger
+  // den kvar som null och datan hamtas fran data.json bredvid sidan.
+  var INBAKAT = {"build": "09a9e69", "byggd": "2026-09-08T23:46:05Z", "floden": {"produktsida": ["Produkten", "Underlag", "COGS och erbjudande", "Produktbilder", "Produktsidan", "A/B/C/D", "Meta-annonscopy", "Image ads", "Överlämning till Rotche"]}, "maskiner": [{"machine": "M1", "namn": "Gnuggdatorn", "product": "", "steg": null, "flode": "produktsida", "stegnamn": ["Produkten", "Underlag", "COGS och erbjudande", "Produktbilder", "Produktsidan", "A/B/C/D", "Meta-annonscopy", "Image ads", "Överlämning till Rotche"], "note": "", "updated": "2026-09-08T23:45:59Z", "avtryck": "17d79e", "delad_dator": []}, {"machine": "M2", "namn": "Gnuggdatorn II", "product": "soldahl-inspektionskamera", "steg": null, "flode": "produktsida", "stegnamn": ["Produkten", "Underlag", "COGS och erbjudande", "Produktbilder", "Produktsidan", "A/B/C/D", "Meta-annonscopy", "Image ads", "Överlämning till Rotche"], "note": "", "updated": "2026-09-08T21:13:14Z", "avtryck": "ca8d9a", "delad_dator": []}, {"machine": "M3", "namn": "", "product": "", "steg": null, "flode": "produktsida", "stegnamn": ["Produkten", "Underlag", "COGS och erbjudande", "Produktbilder", "Produktsidan", "A/B/C/D", "Meta-annonscopy", "Image ads", "Överlämning till Rotche"], "note": "", "updated": "", "avtryck": "", "delad_dator": []}, {"machine": "M4", "namn": "", "product": "", "steg": null, "flode": "produktsida", "stegnamn": ["Produkten", "Underlag", "COGS och erbjudande", "Produktbilder", "Produktsidan", "A/B/C/D", "Meta-annonscopy", "Image ads", "Överlämning till Rotche"], "note": "", "updated": "", "avtryck": "", "delad_dator": []}, {"machine": "M5", "namn": "", "product": "", "steg": null, "flode": "produktsida", "stegnamn": ["Produkten", "Underlag", "COGS och erbjudande", "Produktbilder", "Produktsidan", "A/B/C/D", "Meta-annonscopy", "Image ads", "Överlämning till Rotche"], "note": "", "updated": "", "avtryck": "", "delad_dator": []}], "lardomar": [{"machine": "M1", "text": "Maskinparken omgjord: tavla i stallet for kort, tre tydliga delar med enkel meny, fyra statusfarger som betyder nagot, steglegend, datornamn ur maskinnamn.json, Familjen Grotesk och IBM Plex Mono", "when": "2026-09-09T01:46:00+02:00"}, {"machine": "M1", "text": "Minne: kolla sjalv om Elliot ar inloggad, vanta aldrig pa besked. Enforce HTTPS pa och shipyard.soldahl.se verifierad", "when": "2026-09-09T01:29:46+02:00"}, {"machine": "M1", "text": "Egen doman: shipyard.soldahl.se, CNAME inlagd hos Strato och DOMAN.txt satt sa alla maskiner publicerar mot samma adress", "when": "2026-09-09T01:27:45+02:00"}, {"machine": "M1", "text": "Minne: Pages-uppsattningen, varfor tva repon, och de tva fallorna (git-identitet i frisk klon, manifest maste vara samma ursprung)", "when": "2026-09-08T23:40:44+02:00"}, {"machine": "M1", "text": "robots.txt pa den publika sidan, och README med hela Pages-uppsattningen inklusive exakt DNS-post for egen doman", "when": "2026-09-08T23:40:14+02:00"}, {"machine": "M1", "text": "GitHub Pages: bara den byggda sidan gar till ett separat PUBLIKT repo (elliot851/shipyard), privata repot rors inte. Publiceringen hanger med i varje push", "when": "2026-09-08T23:38:34+02:00"}, {"machine": "M1", "text": "Maskinparken mobil- och datoranpassad: bredden vaxer i tre steg, huvudraden ligger i rad pa bred skarm, installationsknapp tillbaka och manifestet flyttat fran data till blob sa Chrome faktiskt erbjuder installation", "when": "2026-09-08T23:18:44+02:00"}, {"machine": "M2", "text": "hej fran GNUGGDATORN2, maskinen ar uppe", "when": "2026-09-08T23:13:14+02:00"}, {"machine": "M1", "text": "Minne: tva nya maskinparks-fallor (klon pa samma dator ser ut som riktig maskin, git add -A raderar delad kunskap) och att M2 nu ar bevisat uppe pa eget konto", "when": "2026-09-08T22:53:39+02:00"}, {"machine": "M1", "text": "En sida i stallet for tva: samma HTML kor hostad (data.json), som artefakt (delad databas) och fristaende (inbakad ogonblicksbild). Fingeravtryck och varning for tva maskin-id pa samma dator", "when": "2026-09-08T22:52:35+02:00"}, {"machine": "M1", "text": "Steg och notering skrivs nu till status/ sa oversiktssidan visar hur langt varje maskin kommit, och nollstalls vid ny produkt", "when": "2026-09-08T22:47:29+02:00"}, {"machine": "M1", "text": "framsteg soldahl-testkoll STEG 3", "when": "2026-09-08T22:47:10+02:00"}, {"machine": "M1", "text": "Sparr mot kunskapsforlust i push, hello-kommando med datorfingeravtryck, dashboard varnar for tva maskin-id pa samma dator, aterstaller underlagsbygget.md som M2 raderade av misstag", "when": "2026-09-08T22:44:52+02:00"}, {"machine": "M1", "text": "hej fran GNUGGDATORN, maskinen ar uppe", "when": "2026-09-08T22:43:27+02:00"}, {"machine": "M2", "text": "framsteg soldahl-inspektionskamera STEG 1", "when": "2026-09-08T22:25:32+02:00"}, {"machine": "M2", "text": "framsteg soldahl-inspektionskamera STEG 0", "when": "2026-09-08T22:18:59+02:00"}, {"machine": "M2", "text": "M2 onboardad pa unholdr-kontot: setup + sync verifierat, MACHINES.md ifylld", "when": "2026-09-08T21:55:48+02:00"}, {"machine": "M1", "text": "Larddom: min datorkontroll galler bara maskinen jag kor pa, verifiera pastadda kopplingar och leverera via mejl i stallet", "when": "2026-09-08T21:39:07+02:00"}, {"machine": "M1", "text": "Minne: klicka Logga in nar uppgifter redan ligger forifyllda; MEMORY.md uppdaterad infor onboarding av M2", "when": "2026-09-08T21:37:13+02:00"}, {"machine": "M1", "text": "Onboarding for ny dator: NY-DATOR.txt, forberedelsekontroll, varning om lank pekar mot fel repo", "when": "2026-09-08T17:51:55+02:00"}, {"machine": "M1", "text": "Overlamning mellan datorer: builds/ med underlag, progress/resume, och verifiering mot Shopify som sanning", "when": "2026-09-08T17:25:44+02:00"}, {"machine": "M1", "text": "framsteg soldahl-kattpalstrimmer STEG 8", "when": "2026-09-08T17:24:10+02:00"}, {"machine": "M1", "text": "Parbygge kort: temat orort av tva samtidiga byggen, kodkrock avvisas hart av Shopify", "when": "2026-09-08T16:00:11+02:00"}, {"machine": "M1", "text": "Temakollisionen borttagen: delad produktmall, jamforelserubrik i metafalt, ingen temaskrivning per bygge", "when": "2026-09-08T12:31:03+02:00"}, {"machine": "M1", "text": "Skala for fler skills och fler maskiner: flottan upptacks dynamiskt, varje skill har egen stegkedja", "when": "2026-09-08T12:18:15+02:00"}, {"machine": "M1", "text": "Fabriken: uppsattningsguide for Cloudflare Pages + Access", "when": "2026-09-08T11:22:35+02:00"}, {"machine": "M1", "text": "Fabriken: publik statussida byggd ur repot (site/), BOM-fix i statuslasning och sync", "when": "2026-09-08T11:21:48+02:00"}, {"machine": "M1", "text": "PROTOCOL sektion 4: guard-kollisionen ar borta, laset galler ovriga delade temafiler", "when": "2026-09-08T04:37:57+02:00"}, {"machine": "M1", "text": "Maskinparken: oversiktssidan inskriven i protokollet, maskinerna rapporterar in dit", "when": "2026-09-08T04:37:05+02:00"}, {"machine": "M1", "text": "MEMORY.md: git-atomart claim i maskinpark-blocket", "when": "2026-09-08T04:29:25+02:00"}], "las": [], "klara": 4, "mal": 50};
+
+  // Tre kallor, i fallande ordning: data.json bredvid sidan, artefaktens
+  // delade databas, och till sist den inbakade ogonblicksbilden. Samma HTML
+  // i alla tre lagen, sa de kan aldrig glida isar.
   function kopplaDb(){
     if(typeof claude === "undefined" || !claude || !claude.use) return false;
     var bas = INBAKAT || {maskiner:[], lardomar:[], las:[], klara:0, mal:50, floden:{}};
     var S = {maskiner:{}, lardomar:null, klara:null, build:bas.build};
-    var steg = (bas.floden||{})["produktsida"] || [];
 
     function slaIhop(){
       var ids = Object.keys(S.maskiner);
       if(!ids.length) return bas;
-      ids.sort(function(a,b){ return (parseInt(a.slice(1),10)||0)-(parseInt(b.slice(1),10)||0); });
+      ids.sort(function(a,b){ return (parseInt(a.slice(1),10)||0) - (parseInt(b.slice(1),10)||0); });
       return {
-        build: S.build, floden: bas.floden, mal: bas.mal,
-        klara: S.klara===null ? bas.klara : S.klara,
+        build:S.build, floden:bas.floden, mal:bas.mal,
+        klara: S.klara === null ? bas.klara : S.klara,
         las: bas.las,
-        lardomar: S.lardomar===null ? bas.lardomar : S.lardomar,
+        lardomar: S.lardomar === null ? bas.lardomar : S.lardomar,
         maskiner: ids.map(function(id){
           var m = S.maskiner[id] || {};
-          return { machine:id, product:m.product||"", steg:m.steg,
-                   note:m.note||"", updated:m.updated||"",
-                   avtryck:m.avtryck||"", delad_dator:m.delad_dator||[],
-                   flode:"produktsida", stegnamn:steg };
+          return {machine:id, product:m.product || "", steg:m.steg, namn:m.namn || "",
+                  note:m.note || "", updated:m.updated || "", avtryck:m.avtryck || "",
+                  delad_dator:m.delad_dator || [],
+                  stegnamn:(bas.floden || {})["produktsida"] || STEGNAMN};
         })
       };
     }
 
     claude.use("db").then(function(db){
       if(!db) return;
-      var c=document.getElementById("conn");
-      c.className="conn on"; document.getElementById("connTxt").textContent="live";
+      puls("pa", "live");
       db.collection("machines").onSnapshot(function(snap){
-        snap.docs.forEach(function(d){ S.maskiner[d.id] = d.data() || {}; });
-        rita(slaIhop());
-      });
-      db.collection("lardomar").orderBy("when","desc").limit(30).onSnapshot(function(snap){
-        S.lardomar = snap.docs.map(function(d){ return d.data() || {}; });
+        snap.docs.forEach(function(x){ S.maskiner[x.id] = x.data() || {}; });
         rita(slaIhop());
       });
       db.collection("lessons").orderBy("when","desc").limit(30).onSnapshot(function(snap){
-        var r = snap.docs.map(function(d){ return d.data() || {}; });
+        var r = snap.docs.map(function(x){ return x.data() || {}; });
         if(r.length){ S.lardomar = r; rita(slaIhop()); }
       });
       db.doc("stats/vecka").onSnapshot(function(s){
-        if(s && s.exists){ var v=s.data()||{}; if(v.klara!=null){ S.klara=v.klara; rita(slaIhop()); } }
+        if(s && s.exists){ var v = s.data() || {}; if(v.klara != null){ S.klara = v.klara; rita(slaIhop()); } }
       });
       db.doc("meta/version").onSnapshot(function(s){
         if(!s || !s.exists) return;
         var v = s.data() || {};
-        if(v.build && BUILD && v.build !== BUILD){
-          var bar=document.getElementById("upd");
-          bar.style.display="flex";
-          document.getElementById("updBtn").onclick=function(){ location.reload(); };
-        }
+        if(v.build && BYGGE && v.build !== BYGGE) visaNyVersion();
       });
     }).catch(function(){});
     return true;
   }
 
-  function hamta(forsta){
-    fetch("data.json?t="+Date.now(),{cache:"no-store"}).then(function(r){ return r.json(); })
-    .then(function(d){
-      var c=document.getElementById("conn");
-      c.className="conn on"; document.getElementById("connTxt").textContent="live";
-      if(BUILD===null){ BUILD=d.build; }
-      else if(d.build && d.build!==BUILD){
-        var bar=document.getElementById("upd");
-        bar.style.display="flex";
-        document.getElementById("updBtn").onclick=function(){ location.reload(); };
-      }
-      rita(d);
-    })
-    .catch(function(){
-      var c=document.getElementById("conn");
-      if(INBAKAT){
-        // Rita ogonblicksbilden direkt, sa sidan aldrig star tom, och lat
-        // databasen skriva over den om vi kors som artefakt.
-        c.className="conn on"; document.getElementById("connTxt").textContent="ögonblicksbild";
-        if(BUILD===null){ BUILD = INBAKAT.build; }
-        rita(INBAKAT);
-        kopplaDb();
-        return;
-      }
-      if(kopplaDb()) return;
-      c.className="conn off"; document.getElementById("connTxt").textContent="ingen kontakt";
-    });
+  function visaNyVersion(){
+    document.getElementById("nyVersion").style.display = "flex";
+    document.getElementById("nyVersionKnapp").onclick = function(){ location.reload(); };
   }
 
-  // --- Lagg till pa hemskarmen -------------------------------------------
-  // Kors sidan redan som installerad app ska varken knapp eller tips synas.
+  function hamta(){
+    fetch("data.json?t=" + Date.now(), {cache:"no-store"})
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        puls("pa", "live");
+        if(BYGGE === null) BYGGE = d.build;
+        else if(d.build && d.build !== BYGGE) visaNyVersion();
+        rita(d);
+      })
+      .catch(function(){
+        if(INBAKAT){
+          puls("pa", "ögonblicksbild");
+          if(BYGGE === null) BYGGE = INBAKAT.build;
+          rita(INBAKAT);
+          kopplaDb();
+          return;
+        }
+        if(kopplaDb()) return;
+        puls("av", "ingen kontakt");
+      });
+  }
+
+  // --- Menyn foljer med nedat --------------------------------------
   (function(){
-    var knapp = document.getElementById("install");
-    var tips  = document.getElementById("ioshint");
+    var lankar = [].slice.call(document.querySelectorAll(".meny a"));
+    var delar = lankar.map(function(a){ return document.querySelector(a.getAttribute("href")); });
+    if(!window.IntersectionObserver) return;
+    var ob = new IntersectionObserver(function(poster){
+      poster.forEach(function(p){
+        if(!p.isIntersecting) return;
+        var i = delar.indexOf(p.target);
+        if(i < 0) return;
+        lankar.forEach(function(a, j){ a.classList.toggle("har", i === j); });
+      });
+    }, {rootMargin:"-64px 0px -60% 0px", threshold:0});
+    delar.forEach(function(el){ if(el) ob.observe(el); });
+  })();
+
+  // --- Lagg till pa hemskarmen -------------------------------------
+  (function(){
+    var knapp = document.getElementById("installera");
+    var tips = document.getElementById("iosTips");
+    if(window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true) return;
 
     // ⛔ Manifestet MASTE ligga pa samma ursprung som sidan. En data:-URI
-    //    raknas som ett annat ursprung, och da erbjuder Chrome aldrig
-    //    installation, helt tyst. En blob: ar samma ursprung och funkar
-    //    bade pa den hostade sidan och inne i artefakten.
+    //    raknas som ett annat ursprung, och da slutar Chrome tyst erbjuda
+    //    installation. En blob: ar samma ursprung och fungerar bade hostat
+    //    och inne i artefakten.
     try{
       var ikon = '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">' +
-        '<rect width="512" height="512" rx="112" fill="#0c0f0d"/>' +
-        '<rect x="120" y="128" width="52" height="256" rx="26" fill="#26bd62"/>' +
-        '<rect x="200" y="176" width="52" height="208" rx="26" fill="#26bd62" opacity=".72"/>' +
-        '<rect x="280" y="224" width="52" height="160" rx="26" fill="#26bd62" opacity=".48"/>' +
-        '<rect x="360" y="272" width="52" height="112" rx="26" fill="#26bd62" opacity=".26"/></svg>';
+        '<rect width="512" height="512" rx="104" fill="#101215"/>' +
+        '<rect x="112" y="150" width="72" height="212" rx="16" fill="#eaedef"/>' +
+        '<rect x="220" y="104" width="72" height="304" rx="16" fill="#eaedef" opacity=".62"/>' +
+        '<rect x="328" y="196" width="72" height="120" rx="16" fill="#eaedef" opacity=".34"/></svg>';
       var ikonUrl = "data:image/svg+xml;base64," + btoa(ikon);
-      var man = {
-        name:"Maskinparken", short_name:"Maskinparken",
-        start_url: location.href, scope:"./", display:"standalone",
-        background_color:"#0c0f0d", theme_color:"#0c0f0d",
+      var man = {name:"Maskinparken", short_name:"Maskinparken", start_url:location.href,
+        scope:"./", display:"standalone", background_color:"#101215", theme_color:"#101215",
         icons:[{src:ikonUrl, sizes:"any", type:"image/svg+xml", purpose:"any"},
-               {src:ikonUrl, sizes:"512x512", type:"image/svg+xml", purpose:"maskable"}]
-      };
+               {src:ikonUrl, sizes:"512x512", type:"image/svg+xml", purpose:"maskable"}]};
       var lk = document.createElement("link");
       lk.rel = "manifest";
       lk.href = URL.createObjectURL(new Blob([JSON.stringify(man)], {type:"application/manifest+json"}));
@@ -455,30 +672,22 @@
       document.head.appendChild(al);
     }catch(e){}
 
-    var installerad = window.matchMedia("(display-mode: standalone)").matches ||
-                      window.navigator.standalone === true;
-    if(installerad) return;
-
     var vantande = null;
     window.addEventListener("beforeinstallprompt", function(e){
       e.preventDefault(); vantande = e; knapp.hidden = false;
     });
     knapp.addEventListener("click", function(){
-      if(!vantande) return;
-      vantande.prompt(); vantande = null; knapp.hidden = true;
+      if(!vantande) return; vantande.prompt(); vantande = null; knapp.hidden = true;
     });
-    window.addEventListener("appinstalled", function(){
-      knapp.hidden = true; tips.hidden = true;
-    });
+    window.addEventListener("appinstalled", function(){ knapp.hidden = true; tips.hidden = true; });
 
     // iOS skickar aldrig beforeinstallprompt. Dar ar Dela-menyn enda vagen,
-    // sa sag det rakt ut i stallet for att visa en knapp som inte gor nagot.
-    var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-              (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    if(iOS) tips.hidden = false;
+    // sa sag det rakt ut i stallet for en knapp som inte gor nagot.
+    if(/iPad|iPhone|iPod/.test(navigator.userAgent) ||
+       (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)) tips.hidden = false;
   })();
 
-  hamta(true);
+  hamta();
   setInterval(hamta, 60000);
   document.addEventListener("visibilitychange", function(){ if(!document.hidden) hamta(); });
 })();
