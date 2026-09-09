@@ -315,9 +315,43 @@
     .rad__lage[data-lage="bygger"]{animation:andas 3.6s ease-in-out infinite}
     @keyframes andas{0%,100%{opacity:1} 50%{opacity:.62}}
   }
+
+  /* --- Losenordslas ------------------------------------------------ */
+  .las{position:fixed; inset:0; z-index:100; background:var(--papper);
+       display:flex; align-items:center; justify-content:center; padding:24px}
+  .las__kort{width:100%; max-width:360px; text-align:center}
+  .las__mark{margin:0 auto 20px; display:block}
+  .las h1{margin:0 0 6px; font-size:20px; font-weight:600; letter-spacing:-.02em}
+  .las p{margin:0 0 20px; font-size:14px; color:var(--dampat)}
+  .las form{display:flex; flex-direction:column; gap:10px}
+  .las input{font:inherit; font-size:16px; text-align:center; letter-spacing:.02em;
+             padding:13px 14px; border:1px solid var(--linje); border-radius:10px;
+             background:var(--yta); color:var(--blackt); min-height:48px}
+  .las input:focus-visible{outline:2px solid var(--fokus); outline-offset:1px; border-color:var(--fokus)}
+  .las button{font:inherit; font-size:15px; font-weight:600; border:0; border-radius:10px;
+              background:var(--blackt); color:var(--papper); padding:13px; min-height:48px; cursor:pointer}
+  .las__fel{min-height:18px; font-size:13px; color:var(--tyst); font-weight:500}
 </style>
 </head>
 <body>
+
+<div class="las" id="las" hidden>
+  <div class="las__kort">
+    <svg class="las__mark" width="30" height="30" viewBox="0 0 22 22" aria-hidden="true">
+      <rect x="0" y="4" width="5" height="14" rx="1.2" fill="currentColor"/>
+      <rect x="6.5" y="0" width="5" height="22" rx="1.2" fill="currentColor" opacity=".55"/>
+      <rect x="13" y="7" width="5" height="11" rx="1.2" fill="currentColor" opacity=".3"/>
+    </svg>
+    <h1>Maskinparken</h1>
+    <p>Skyddad sida. Ange lösenordet.</p>
+    <form id="lasForm">
+      <input id="lasInput" type="password" inputmode="text" autocomplete="current-password"
+             placeholder="Lösenord" aria-label="Lösenord" autofocus>
+      <div class="las__fel" id="lasFel"></div>
+      <button type="submit">Lås upp</button>
+    </form>
+  </div>
+</div>
 
 <div class="ram">
   <header class="mast">
@@ -591,6 +625,79 @@
   // den kvar som null och datan hamtas fran data.json bredvid sidan.
   var INBAKAT = null; /*INBAKAD-DATA*/
 
+  // --- Losenordslas -------------------------------------------------
+  // data.json ar krypterad vid bygget (se build.py). Vi avkrypterar i
+  // webblasaren med Web Crypto, exakt samma konstruktion som build.py:
+  // PBKDF2-HMAC-SHA256 -> nyckel, HMAC-SHA256-nyckelstrom -> kryptering,
+  // HMAC-SHA256 -> integritet. Losenordet lamnar aldrig sidan.
+  var LOSEN_NYCKEL = "mp-losen";
+  function arKrypterad(x){ return x && typeof x === "object" && x.v === 1 && x.salt && x.ct && x.tag; }
+  function b64d(s){ return Uint8Array.from(atob(s), function(c){ return c.charCodeAt(0); }); }
+  function likadana(a, b){
+    if(a.length !== b.length) return false;
+    var d = 0; for(var i = 0; i < a.length; i++) d |= a[i] ^ b[i]; return d === 0;
+  }
+  async function pbkdf2(losen, salt, iter, byteantal){
+    var km = await crypto.subtle.importKey("raw", new TextEncoder().encode(losen), "PBKDF2", false, ["deriveBits"]);
+    var bits = await crypto.subtle.deriveBits({name:"PBKDF2", salt:salt, iterations:iter, hash:"SHA-256"}, km, byteantal * 8);
+    return new Uint8Array(bits);
+  }
+  async function hmacDig(key, msg){
+    var k = await crypto.subtle.importKey("raw", key, {name:"HMAC", hash:"SHA-256"}, false, ["sign"]);
+    return new Uint8Array(await crypto.subtle.sign("HMAC", k, msg));
+  }
+  async function nyckelstrom(enckey, salt, n){
+    var ut = new Uint8Array(n), i = 0, off = 0;
+    while(off < n){
+      var ctr = new Uint8Array(4); new DataView(ctr.buffer).setUint32(0, i, false); // big-endian, som Python
+      var msg = new Uint8Array(salt.length + 4); msg.set(salt, 0); msg.set(ctr, salt.length);
+      var blk = await hmacDig(enckey, msg);
+      for(var j = 0; j < blk.length && off < n; j++, off++) ut[off] = blk[j];
+      i++;
+    }
+    return ut;
+  }
+  async function avkryptera(env, losen){
+    var salt = b64d(env.salt), ct = b64d(env.ct), tag = b64d(env.tag);
+    var dk = await pbkdf2(losen, salt, env.iter, 64);
+    var enckey = dk.slice(0, 32), mackey = dk.slice(32);
+    var msg = new Uint8Array(salt.length + ct.length); msg.set(salt, 0); msg.set(ct, salt.length);
+    if(!likadana(await hmacDig(mackey, msg), tag)) throw new Error("fel losenord");
+    var ks = await nyckelstrom(enckey, salt, ct.length);
+    var pt = new Uint8Array(ct.length); for(var i = 0; i < ct.length; i++) pt[i] = ct[i] ^ ks[i];
+    return JSON.parse(new TextDecoder().decode(pt));
+  }
+  // Ger tillbaka klartext-objektet. Ar det inte krypterat: returnera direkt.
+  // Ar det krypterat: prova sparat losenord, annars visa laset och vanta.
+  async function lasUpp(raw){
+    if(!arKrypterad(raw)) return raw;
+    var sparat = null;
+    try { sparat = localStorage.getItem(LOSEN_NYCKEL); } catch(e){}
+    if(sparat){
+      try { return await avkryptera(raw, sparat); }
+      catch(e){ try { localStorage.removeItem(LOSEN_NYCKEL); } catch(_){} }
+    }
+    return await new Promise(function(resolve){
+      var las = document.getElementById("las"), form = document.getElementById("lasForm"),
+          inp = document.getElementById("lasInput"), fel = document.getElementById("lasFel");
+      las.hidden = false;
+      setTimeout(function(){ inp.focus(); }, 50);
+      form.onsubmit = async function(e){
+        e.preventDefault();
+        fel.textContent = "";
+        try {
+          var d = await avkryptera(raw, inp.value);
+          try { localStorage.setItem(LOSEN_NYCKEL, inp.value); } catch(_){}
+          las.hidden = true; form.onsubmit = null;
+          resolve(d);
+        } catch(err){
+          fel.textContent = "Fel lösenord.";
+          inp.select();
+        }
+      };
+    });
+  }
+
   // Tre kallor, i fallande ordning: data.json bredvid sidan, artefaktens
   // delade databas, och till sist den inbakade ogonblicksbilden. Samma HTML
   // i alla tre lagen, sa de kan aldrig glida isar.
@@ -650,6 +757,7 @@
   function hamta(){
     fetch("data.json?t=" + Date.now(), {cache:"no-store"})
       .then(function(r){ return r.json(); })
+      .then(function(raw){ return lasUpp(raw); })
       .then(function(d){
         puls("pa", "live");
         if(BYGGE === null) BYGGE = d.build;
@@ -658,10 +766,12 @@
       })
       .catch(function(){
         if(INBAKAT){
-          puls("pa", "ögonblicksbild");
-          if(BYGGE === null) BYGGE = INBAKAT.build;
-          rita(INBAKAT);
-          kopplaDb();
+          lasUpp(INBAKAT).then(function(d){
+            puls("pa", "ögonblicksbild");
+            if(BYGGE === null) BYGGE = d.build;
+            rita(d);
+            kopplaDb();
+          }).catch(function(){ puls("av", "ingen kontakt"); });
           return;
         }
         if(kopplaDb()) return;

@@ -313,6 +313,22 @@
     @keyframes andas{0%,100%{opacity:1} 50%{opacity:.62}}
   }
 
+  /* --- Losenordslas ------------------------------------------------ */
+  .las{position:fixed; inset:0; z-index:100; background:var(--papper);
+       display:flex; align-items:center; justify-content:center; padding:24px}
+  .las__kort{width:100%; max-width:360px; text-align:center}
+  .las__mark{margin:0 auto 20px; display:block}
+  .las h1{margin:0 0 6px; font-size:20px; font-weight:600; letter-spacing:-.02em}
+  .las p{margin:0 0 20px; font-size:14px; color:var(--dampat)}
+  .las form{display:flex; flex-direction:column; gap:10px}
+  .las input{font:inherit; font-size:16px; text-align:center; letter-spacing:.02em;
+             padding:13px 14px; border:1px solid var(--linje); border-radius:10px;
+             background:var(--yta); color:var(--blackt); min-height:48px}
+  .las input:focus-visible{outline:2px solid var(--fokus); outline-offset:1px; border-color:var(--fokus)}
+  .las button{font:inherit; font-size:15px; font-weight:600; border:0; border-radius:10px;
+              background:var(--blackt); color:var(--papper); padding:13px; min-height:48px; cursor:pointer}
+  .las__fel{min-height:18px; font-size:13px; color:var(--tyst); font-weight:500}
+
 
   /* --- Bara for den har sidan ------------------------------------- */
   .steg{background:var(--yta); border:1px solid var(--linje); border-radius:var(--radie);
