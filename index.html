@@ -258,6 +258,20 @@
   .legend__lista b{flex:none; width:22px; font-family:"IBM Plex Mono",monospace;
                    font-size:12.5px; font-weight:600; color:var(--svagt)}
 
+  /* --- Nyheter ----------------------------------------------------- */
+  .ingress{margin:-6px 0 14px; font-size:14px; color:var(--dampat); max-width:62ch}
+  .ingress code{font-family:"IBM Plex Mono",monospace; font-size:12.5px;
+                background:var(--yta-2); padding:1px 5px; border-radius:4px}
+  .nyheter{background:var(--yta); border:1px solid var(--linje);
+           border-radius:var(--radie); box-shadow:var(--skugga); overflow:hidden}
+  .nyhet{padding:15px 18px; border-bottom:1px solid var(--linje-svag)}
+  .nyhet:last-child{border-bottom:0}
+  .nyhet__rad{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+  .nyhet__datum{font-size:12px; color:var(--svagt); flex:none}
+  .nyhet__rubrik{font-size:15.5px; font-weight:600; letter-spacing:-.01em; overflow-wrap:anywhere}
+  .nyhet__text{margin:6px 0 0; font-size:14px; line-height:1.5; color:var(--dampat);
+               white-space:pre-wrap; overflow-wrap:anywhere; max-width:72ch}
+
   /* --- Loggen ------------------------------------------------------ */
   .logg{background:var(--yta); border:1px solid var(--linje);
         border-radius:var(--radie); box-shadow:var(--skugga); overflow:hidden}
@@ -319,6 +333,7 @@
   <div class="meny__inre">
     <a href="#laget" class="har">Läget</a>
     <a href="#maskiner">Maskiner</a>
+    <a href="#nyheter">Nyheter</a>
     <a href="#loggen">Loggen</a>
   </div>
 </nav>
@@ -362,6 +377,13 @@
       <summary>Vad betyder stegen?</summary>
       <ul class="legend__lista" id="legend"></ul>
     </details>
+  </section>
+
+  <section id="nyheter">
+    <div class="rubrik"><h2>Nyheter</h2><span class="rakning" id="nyhetRakning"></span></div>
+    <p class="ingress">Ändringar alla maskiner måste följa. Samma poster som <code>sync.ps1 pull</code>
+       visar för dem, så här syns exakt vad de blivit tillsagda.</p>
+    <div class="nyheter" id="nyheterLista"><div class="tomt">Hämtar…</div></div>
   </section>
 
   <section id="loggen">
@@ -524,6 +546,20 @@
       rader.length ? "senaste " + rader.length : "";
   }
 
+  function ritaNyheter(d){
+    var rader = d.nyheter || [];
+    document.getElementById("nyheterLista").innerHTML = rader.length
+      ? rader.map(function(n){
+          return '<div class="nyhet"><div class="nyhet__rad">' +
+                 '<span class="nyhet__datum mono">' + esc(n.datum) + "</span>" +
+                 '<span class="nyhet__rubrik">' + esc(n.rubrik) + "</span></div>" +
+                 (n.text ? '<p class="nyhet__text">' + esc(n.text) + "</p>" : "") +
+                 "</div>";
+        }).join("")
+      : '<div class="tomt">Inga nyheter.</div>';
+    document.getElementById("nyhetRakning").textContent = rader.length ? rader.length + " st" : "";
+  }
+
   function ritaLegend(d){
     var namn = (d.floden && d.floden["produktsida"]) || STEGNAMN;
     if(!namn.length) return;
@@ -536,6 +572,7 @@
   function rita(d){
     ritaLegend(d);
     ritaMaskiner(d);
+    ritaNyheter(d);
     ritaLogg(d);
   }
 
@@ -566,6 +603,7 @@
         klara: S.klara === null ? bas.klara : S.klara,
         las: bas.las,
         lardomar: S.lardomar === null ? bas.lardomar : S.lardomar,
+        nyheter: bas.nyheter || [],
         maskiner: ids.map(function(id){
           var m = S.maskiner[id] || {};
           return {machine:id, product:m.product || "", steg:m.steg, namn:m.namn || "",
