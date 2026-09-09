@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ny dator · Maskinparken</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#121417">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+
+  /* ------------------------------------------------------------------
+     Maskinparken.
+
+     Sidan ar en TAVLA, inte en app. Den ska ga att lasa pa tre sekunder
+     med telefonen i handen: ar allt lugnt, vem bygger vad, hur langt har
+     de kommit. Darfor tabellrader i stallet for kort, och statusfarger
+     som betyder nagot i stallet for en dekorativ accentfarg.
+
+     Typsnitt: Familjen Grotesk for text (svenskritad grotesk med egen
+     karaktar), IBM Plex Mono for allt som ar data: maskin-id, steg,
+     klockslag. Siffror ska stapla sig i kolumn, darav tabular-nums.
+     ------------------------------------------------------------------ */
+
+  :root{
+    color-scheme: light dark;
+
+    /* Ytor och linjer. Neutralen dras nagot mot bla-gront sa den inte
+       laser som en obeslutsam gra. */
+    --papper:#f2f3f0;
+    --yta:#ffffff;
+    --yta-2:#e9ebe7;
+    --linje:#d8dbd5;
+    --linje-svag:#e7e9e4;
+
+    /* Text */
+    --blackt:#15181b;
+    --dampat:#565d63;
+    --svagt:#868d93;
+
+    /* Status. Fyra tillstand, fyra farger, ingen av dem ar en varumarkes-
+       accent. Farg = betydelse, inte dekor. */
+    --bygger:#9a5600;
+    --bygger-yta:#f6ecdd;
+    --ledig:#2c6349;
+    --ledig-yta:#e2eee8;
+    --tyst:#9e2f21;
+    --tyst-yta:#f6e4e1;
+    --av:#9aa1a6;
+    --av-yta:#eaece9;
+
+    --fokus:#15181b;
+    --skugga:0 1px 0 rgba(21,24,27,.04);
+    --radie:10px;
+  }
+
+  /* Tre lagen: system utan stampel, uttryckligt morkt, uttryckligt ljust. */
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --papper:#101215;
+      --yta:#171a1e;
+      --yta-2:#1e2227;
+      --linje:#262b31;
+      --linje-svag:#1f242a;
+      --blackt:#eaedef;
+      --dampat:#9ba3aa;
+      --svagt:#6d757c;
+      --bygger:#e0a04a;
+      --bygger-yta:#2a2015;
+      --ledig:#63bf93;
+      --ledig-yta:#152420;
+      --tyst:#e07a68;
+      --tyst-yta:#2a1a17;
+      --av:#5b6167;
+      --av-yta:#1d2126;
+      --fokus:#eaedef;
+      --skugga:none;
+    }
+  }
+  :root[data-theme="dark"]{
+    --papper:#101215;
+    --yta:#171a1e;
+    --yta-2:#1e2227;
+    --linje:#262b31;
+    --linje-svag:#1f242a;
+    --blackt:#eaedef;
+    --dampat:#9ba3aa;
+    --svagt:#6d757c;
+    --bygger:#e0a04a;
+    --bygger-yta:#2a2015;
+    --ledig:#63bf93;
+    --ledig-yta:#152420;
+    --tyst:#e07a68;
+    --tyst-yta:#2a1a17;
+    --av:#5b6167;
+    --av-yta:#1d2126;
+    --fokus:#eaedef;
+    --skugga:none;
+  }
+
+  *{box-sizing:border-box}
+  html,body{max-width:100%; overflow-x:clip}
+  body{
+    margin:0; background:var(--papper); color:var(--blackt);
+    font-family:"Familjen Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,monospace;
+        font-variant-numeric:tabular-nums}
+
+  .ram{max-width:960px; margin:0 auto;
+       padding:0 max(18px, env(safe-area-inset-right)) 0 max(18px, env(safe-area-inset-left))}
+  /* Bottenluften hor till sidans SISTA block, inte till varje ram. Satt den
+     pa alla och far huvudet ett 56 px stort hal under sig. */
+  .ram--slut{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
+  @media (min-width:1280px){ .ram{max-width:1120px} }
+
+  /* --- Huvud ------------------------------------------------------- */
+  .mast{display:flex; align-items:center; justify-content:space-between;
+        gap:16px; padding:22px 0 16px}
+  .mast__id{display:flex; align-items:center; gap:11px; min-width:0}
+  .mast__mark{flex:none; display:block}
+  .mast__namn{font-size:19px; font-weight:600; letter-spacing:-.015em; white-space:nowrap}
+  .puls{display:flex; align-items:center; gap:7px; font-size:12px;
+        color:var(--dampat); white-space:nowrap}
+  .puls__prick{width:7px; height:7px; border-radius:50%; background:var(--av)}
+  .puls.pa .puls__prick{background:var(--ledig)}
+  .puls.av .puls__prick{background:var(--tyst)}
+
+  /* --- Menyn. Tre ord. Inget mer. ---------------------------------- */
+  .meny{position:sticky; top:0; z-index:20; background:var(--papper);
+        border-bottom:1px solid var(--linje); margin-bottom:30px}
+  /* Fem ord ska fa plats pa en rad aven pa 375 px. Bryts ett ord pa tva rader
+     ser menyn trasig ut, sa hellre en rad som gar att dra i sidled. */
+  .meny__inre{max-width:960px; margin:0 auto; display:flex; gap:4px;
+              padding:0 max(18px, env(safe-area-inset-left));
+              overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch}
+  .meny__inre::-webkit-scrollbar{display:none}
+  @media (min-width:1280px){ .meny__inre{max-width:1120px} }
+  .meny a{
+    flex:1 0 auto; text-align:center; text-decoration:none; color:var(--dampat);
+    font-size:14px; font-weight:500; letter-spacing:.01em; white-space:nowrap;
+    padding:13px 8px 11px; border-bottom:2px solid transparent;
+    margin-bottom:-1px; min-height:44px; display:flex; align-items:center;
+    justify-content:center;
+  }
+  @media (min-width:640px){ .meny a{flex:0 0 auto; text-align:left; padding-inline:2px; margin-right:26px} }
+  .meny a.har{color:var(--blackt); border-bottom-color:var(--blackt)}
+  .meny a:focus-visible{outline:2px solid var(--fokus); outline-offset:-2px}
+
+  /* --- Sektioner --------------------------------------------------- */
+  section{scroll-margin-top:64px; margin-bottom:38px}
+  .rubrik{display:flex; align-items:baseline; justify-content:space-between;
+          gap:12px; margin:0 0 14px}
+  .rubrik h2{margin:0; font-size:13px; font-weight:600; letter-spacing:.14em;
+             text-transform:uppercase; color:var(--svagt)}
+  .rubrik .rakning{font-size:12px; color:var(--svagt)}
+
+  /* --- Laget ------------------------------------------------------- */
+  .laget{background:var(--yta); border:1px solid var(--linje);
+         border-radius:var(--radie); box-shadow:var(--skugga); overflow:hidden}
+  .laget__dom{display:flex; gap:14px; align-items:flex-start; padding:20px 20px 18px}
+  .laget__flagga{width:4px; align-self:stretch; border-radius:2px; background:var(--ledig); flex:none}
+  .laget.varning .laget__flagga{background:var(--tyst)}
+  .laget.arbete .laget__flagga{background:var(--bygger)}
+  .laget__text strong{display:block; font-size:22px; font-weight:600;
+                      letter-spacing:-.02em; line-height:1.25; text-wrap:balance}
+  .laget__text span{display:block; margin-top:3px; color:var(--dampat); font-size:14.5px}
+
+  .takt{border-top:1px solid var(--linje-svag); padding:16px 20px 18px}
+  .takt__rad{display:flex; align-items:baseline; justify-content:space-between;
+             gap:12px; margin-bottom:9px}
+  .takt__tal{font-size:15px; color:var(--dampat)}
+  .takt__tal b{font-size:26px; font-weight:600; letter-spacing:-.03em; color:var(--blackt)}
+  .takt__mal{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--svagt)}
+  .takt__spar{height:6px; border-radius:3px; background:var(--yta-2); overflow:hidden}
+  .takt__spar i{display:block; height:100%; background:var(--blackt); border-radius:3px; min-width:3px}
+
+  /* --- Maskintavlan ------------------------------------------------
+     Pa dator en riktig tabell med kolumnrubriker, for att ogat ska kunna
+     lasa nedat i en kolumn. Pa telefon staplas varje maskin i stallet,
+     for en femkolumnstabell pa 375 px blir oläslig. */
+  .tavla{background:var(--yta); border:1px solid var(--linje);
+         border-radius:var(--radie); box-shadow:var(--skugga); overflow:hidden}
+  .tavla__huvud{display:none}
+  .rad{display:grid; gap:3px 16px; padding:15px 18px;
+       border-bottom:1px solid var(--linje-svag);
+       grid-template-columns:auto 1fr auto; align-items:baseline}
+  .rad:last-child{border-bottom:0}
+
+  .rad__id{font-size:13px; font-weight:600; letter-spacing:.02em; color:var(--blackt)}
+  .rad__namn{font-size:13px; color:var(--svagt); overflow-wrap:anywhere}
+  .rad__lage{grid-column:3; justify-self:end; font-size:11.5px; font-weight:600;
+             letter-spacing:.07em; text-transform:uppercase; white-space:nowrap;
+             padding:3px 8px; border-radius:20px}
+  .rad__lage[data-lage="bygger"]{color:var(--bygger); background:var(--bygger-yta)}
+  .rad__lage[data-lage="ledig"] {color:var(--ledig);  background:var(--ledig-yta)}
+  .rad__lage[data-lage="tyst"]  {color:var(--tyst);   background:var(--tyst-yta)}
+  .rad__lage[data-lage="av"]    {color:var(--av);     background:var(--av-yta)}
+
+  .rad__uppdrag{grid-column:1 / -1; margin-top:7px; font-size:16px;
+                font-weight:500; letter-spacing:-.01em; overflow-wrap:anywhere}
+  .rad__uppdrag.tom{font-weight:400; color:var(--svagt)}
+  .rad__steg{grid-column:1 / -1; margin-top:8px}
+  .rad__stegrad{display:flex; align-items:baseline; gap:9px; margin-bottom:6px;
+                font-size:13px; color:var(--dampat); flex-wrap:wrap}
+  .rad__stegnr{font-size:12px; font-weight:600; color:var(--blackt)}
+  .stapel{display:flex; gap:2px}
+  .stapel i{flex:1 1 0; height:5px; border-radius:1px; background:var(--yta-2); min-width:0}
+  .stapel i.klar{background:var(--bygger); opacity:.42}
+  .stapel i.nu{background:var(--bygger)}
+  .rad__senast{grid-column:1 / -1; margin-top:9px; font-size:12px; color:var(--svagt)}
+  .rad__krock{grid-column:1 / -1; margin-top:9px; font-size:13px; font-weight:500;
+              color:var(--tyst); background:var(--tyst-yta);
+              border-radius:7px; padding:8px 10px; overflow-wrap:anywhere}
+
+  @media (min-width:760px){
+    .tavla__huvud, .rad{
+      display:grid;
+      grid-template-columns:52px minmax(96px,.7fr) minmax(0,1.5fr) minmax(150px,1.1fr) 86px;
+      gap:0 18px; align-items:center;
+    }
+    .tavla__huvud{padding:11px 20px; border-bottom:1px solid var(--linje);
+                  background:var(--yta-2)}
+    .tavla__huvud span{font-size:10.5px; font-weight:600; letter-spacing:.12em;
+                       text-transform:uppercase; color:var(--svagt)}
+    .tavla__huvud span:last-child{text-align:right}
+    .rad{padding:16px 20px}
+    .rad__id{grid-column:1; font-size:14px}
+    .rad__namn{grid-column:2; font-size:13.5px; color:var(--dampat)}
+    .rad__uppdrag{grid-column:3; margin-top:0}
+    .rad__steg{grid-column:4; margin-top:0}
+    .rad__stegrad{margin-bottom:5px; font-size:12.5px}
+    .rad__lage{grid-column:5; justify-self:end}
+    .rad__senast{grid-column:3 / -1; margin-top:6px; text-align:right}
+    .rad__krock{grid-column:1 / -1; margin-top:10px}
+  }
+
+  /* --- Steglegenden ------------------------------------------------ */
+  .legend{margin-top:14px; background:var(--yta); border:1px solid var(--linje);
+          border-radius:var(--radie); overflow:hidden}
+  .legend > summary{
+    list-style:none; cursor:pointer; padding:14px 18px; min-height:44px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    font-size:14px; font-weight:500; color:var(--dampat);
+  }
+  .legend > summary::-webkit-details-marker{display:none}
+  .legend > summary::after{content:"+"; font-family:"IBM Plex Mono",monospace;
+                           font-size:16px; color:var(--svagt)}
+  .legend[open] > summary::after{content:"–"}
+  .legend > summary:focus-visible{outline:2px solid var(--fokus); outline-offset:-2px}
+  .legend__lista{margin:0; padding:0 18px 16px; border-top:1px solid var(--linje-svag);
+                 padding-top:14px; list-style:none;
+                 display:grid; grid-template-columns:1fr; gap:7px}
+  @media (min-width:700px){ .legend__lista{grid-template-columns:1fr 1fr; gap:8px 26px} }
+  .legend__lista li{display:flex; gap:11px; font-size:14px; color:var(--dampat)}
+  .legend__lista b{flex:none; width:22px; font-family:"IBM Plex Mono",monospace;
+                   font-size:12.5px; font-weight:600; color:var(--svagt)}
+
+  /* --- Nyheter ----------------------------------------------------- */
+  .ingress{margin:-6px 0 14px; font-size:14px; color:var(--dampat); max-width:62ch}
+  .ingress code{font-family:"IBM Plex Mono",monospace; font-size:12.5px;
+                background:var(--yta-2); padding:1px 5px; border-radius:4px}
+  .nyheter{background:var(--yta); border:1px solid var(--linje);
+           border-radius:var(--radie); box-shadow:var(--skugga); overflow:hidden}
+  .nyhet{padding:15px 18px; border-bottom:1px solid var(--linje-svag)}
+  .nyhet:last-child{border-bottom:0}
+  .nyhet__rad{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+  .nyhet__datum{font-size:12px; color:var(--svagt); flex:none}
+  .nyhet__rubrik{font-size:15.5px; font-weight:600; letter-spacing:-.01em; overflow-wrap:anywhere}
+  .nyhet__text{margin:6px 0 0; font-size:14px; line-height:1.5; color:var(--dampat);
+               white-space:pre-wrap; overflow-wrap:anywhere; max-width:72ch}
+
+  /* --- Loggen ------------------------------------------------------ */
+  .logg{background:var(--yta); border:1px solid var(--linje);
+        border-radius:var(--radie); box-shadow:var(--skugga); overflow:hidden}
+  .post{display:grid; grid-template-columns:auto 1fr; gap:4px 13px;
+        padding:14px 18px; border-bottom:1px solid var(--linje-svag)}
+  .post:last-child{border-bottom:0}
+  .post__vem{font-size:11.5px; font-weight:600; letter-spacing:.04em; color:var(--svagt);
+             padding-top:2px}
+  .post__text{font-size:15px; line-height:1.45; overflow-wrap:anywhere}
+  .post__nar{grid-column:2; font-size:12px; color:var(--svagt)}
+  @media (min-width:760px){ .logg__rulle{max-height:min(560px, calc(100vh - 220px));
+                                         overflow-y:auto; overscroll-behavior:contain} }
+
+  .tomt{padding:18px; color:var(--svagt); font-size:14.5px}
+
+  /* --- Notiser ----------------------------------------------------- */
+  .notis{display:none; align-items:center; gap:13px; flex-wrap:wrap;
+         background:var(--yta); border:1px solid var(--blackt);
+         border-radius:var(--radie); padding:14px 16px; margin-bottom:24px}
+  .notis p{margin:0; font-size:14.5px; flex:1 1 200px; min-width:0}
+  .knapp{font:inherit; font-size:14px; font-weight:600; border:1px solid var(--blackt);
+         background:var(--blackt); color:var(--papper); border-radius:8px;
+         padding:11px 17px; min-height:44px; cursor:pointer}
+  .knapp:focus-visible{outline:2px solid var(--fokus); outline-offset:2px}
+  #installera{display:block; margin-bottom:24px}
+  .tips{margin:0 0 24px; font-size:14px; color:var(--dampat); background:var(--yta);
+        border:1px solid var(--linje); border-radius:var(--radie); padding:13px 15px}
+  .tips b{color:var(--blackt); font-weight:600}
+
+  footer{margin-top:34px; padding-top:20px; border-top:1px solid var(--linje);
+         color:var(--svagt); font-size:13.5px; line-height:1.6}
+  footer p{margin:0 0 8px} footer p:last-child{margin-bottom:0}
+  footer code{font-family:"IBM Plex Mono",monospace; font-size:12.5px;
+              background:var(--yta-2); padding:1px 5px; border-radius:4px}
+
+  @media (prefers-reduced-motion:no-preference){
+    .rad__lage[data-lage="bygger"]{animation:andas 3.6s ease-in-out infinite}
+    @keyframes andas{0%,100%{opacity:1} 50%{opacity:.62}}
+  }
+
+
+  /* --- Bara for den har sidan ------------------------------------- */
+  .steg{background:var(--yta); border:1px solid var(--linje); border-radius:var(--radie);
+        box-shadow:var(--skugga); overflow:hidden; margin-bottom:18px}
+  .steg__huvud{display:flex; align-items:baseline; gap:12px; padding:16px 18px 12px}
+  .steg__nr{font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:600;
+            color:var(--svagt); letter-spacing:.08em}
+  .steg__rubrik{margin:0; font-size:17px; font-weight:600; letter-spacing:-.015em}
+  .steg__text{margin:0; padding:0 18px 14px; font-size:14.5px; color:var(--dampat);
+              max-width:64ch; line-height:1.55}
+  .steg__text b{color:var(--blackt); font-weight:600}
+  .steg ul{margin:0; padding:0 18px 14px 36px; font-size:14.5px; color:var(--dampat); line-height:1.6}
+
+  .kod{position:relative; border-top:1px solid var(--linje-svag); background:var(--yta-2)}
+  .kod pre{margin:0; padding:16px 18px 18px; font-family:"IBM Plex Mono",ui-monospace,monospace;
+           font-size:13px; line-height:1.55; color:var(--blackt); white-space:pre-wrap;
+           overflow-wrap:anywhere; tab-size:4}
+  .kod__rad{display:flex; align-items:center; justify-content:space-between; gap:12px;
+            padding:10px 18px; border-top:1px solid var(--linje-svag); background:var(--yta)}
+  .kod__vad{font-size:12.5px; color:var(--svagt)}
+  .kopiera{font:inherit; font-size:13.5px; font-weight:600; border:1px solid var(--blackt);
+           background:var(--blackt); color:var(--papper); border-radius:8px;
+           padding:9px 15px; min-height:40px; cursor:pointer; flex:none}
+  .kopiera:focus-visible{outline:2px solid var(--fokus); outline-offset:2px}
+  .kopiera.klar{background:var(--ledig); border-color:var(--ledig); color:#fff}
+
+  .idval{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:0 18px 16px;
+         font-size:14.5px; color:var(--dampat)}
+  .idval select{font:inherit; font-family:"IBM Plex Mono",monospace; font-size:14px; font-weight:600;
+                padding:8px 32px 8px 10px; border:1px solid var(--linje); border-radius:8px;
+                background:var(--yta); color:var(--blackt); min-height:40px; cursor:pointer}
+  .idval .tips{margin:0; padding:0; border:0; background:none; font-size:13px}
+  .mid{font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--blackt);
+       background:var(--bygger-yta); padding:1px 6px; border-radius:4px}
+
+  .tillbaka{display:inline-flex; align-items:center; gap:8px; text-decoration:none;
+            color:var(--dampat); font-size:14px; font-weight:500; min-height:44px}
+  .tillbaka:hover{color:var(--blackt)}
+  .ingress{margin:0 0 24px; font-size:15.5px; color:var(--dampat); max-width:62ch; line-height:1.55}
+  .ingress b{color:var(--blackt); font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="ram">
+  <header class="mast">
+    <div class="mast__id">
+      <svg class="mast__mark" width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+        <rect x="0" y="4" width="5" height="14" rx="1.2" fill="currentColor"/>
+        <rect x="6.5" y="0" width="5" height="22" rx="1.2" fill="currentColor" opacity=".55"/>
+        <rect x="13" y="7" width="5" height="11" rx="1.2" fill="currentColor" opacity=".3"/>
+      </svg>
+      <span class="mast__namn">Maskinparken</span>
+    </div>
+    <a class="tillbaka" href="./">← Till tavlan</a>
+  </header>
+</div>
+
+<nav class="meny" aria-label="Sidans delar">
+  <div class="meny__inre">
+    <a href="./#laget">Läget</a>
+    <a href="./#maskiner">Maskiner</a>
+    <a href="./#nyheter">Nyheter</a>
+    <a href="./#loggen">Loggen</a>
+    <a href="ny-dator.html" class="har">Ny dator</a>
+  </div>
+</nav>
+
+<div class="ram ram--slut">
+
+  <section>
+    <div class="rubrik"><h2>Koppla in en ny dator</h2></div>
+    <p class="ingress">
+      Tre saker, i ordning. Del 1 och 2 gör du vid den nya datorn, del 3 klistrar du in i Claude.
+      Sedan sköter maskinen sig själv. Maskin-id nedan är <b>nästa lediga</b>, byt om du vill.
+    </p>
+
+    <div class="steg">
+      <div class="steg__huvud"><span class="steg__nr">1</span><h3 class="steg__rubrik">Det här måste finnas först</h3></div>
+      <ul>
+        <li><b>Ett eget Claude-konto.</b> Delar två datorer samma konto delar de samma tak, och ni får ingen extra kapacitet alls.</li>
+        <li>Git, Python och Claude Code installerade.</li>
+        <li>Kopplingar i det nya Claude-kontot: <b>Shopify</b> (obligatorisk), Google Drive (image ads), Chrome-tillägget (Firefly och Creative Loop).</li>
+        <li>Starta Claude Code <b>en gång</b> i mappen <span class="mono">C:\Users\&lt;du&gt;\Downloads\Claude CODE</span> och stäng den. Det skapar mappen som steg 2 kopplar minnet till.</li>
+      </ul>
+    </div>
+
+    <div class="steg">
+      <div class="steg__huvud"><span class="steg__nr">2</span><h3 class="steg__rubrik">Fyra kommandon i PowerShell</h3></div>
+      <div class="idval">
+        <label for="idval">Maskin-id</label>
+        <select id="idval" aria-label="Välj maskin-id"></select>
+        <span id="idTips"></span>
+      </div>
+      <div class="kod">
+        <pre id="kommandon">git clone https://github.com/elliot851/soldahl-machine.git C:\soldahl-machine
+cd C:\soldahl-machine
+powershell -ExecutionPolicy Bypass -File tools\setup-machine.ps1 -MachineId M3
+powershell -ExecutionPolicy Bypass -File tools\sync.ps1 hello</pre>
+        <div class="kod__rad">
+          <span class="kod__vad">Klistra in i PowerShell. Logga in som elliot851 när GitHub frågar.</span>
+          <button class="kopiera" type="button" data-mal="kommandon">Kopiera</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="steg">
+      <div class="steg__huvud"><span class="steg__nr">3</span><h3 class="steg__rubrik">Första meddelandet till Claude</h3></div>
+      <p class="steg__text">Starta Claude Code i samma mapp och klistra in exakt det här. Det är den enda prompten som behövs.</p>
+      <div class="kod">
+        <pre id="prompt">Du ar maskin M3 i Soldahls maskinpark.
+
+Las C:\soldahl-machine\PROTOCOL.md forst. Den ar bindande arbetsordning
+och gar fore din egen bedomning. Las sedan
+C:\soldahl-machine\memory\MEMORY.md och
+C:\soldahl-machine\runbook\00-START-HAR.txt.
+
+Kor sedan:
+powershell -ExecutionPolicy Bypass -File C:\soldahl-machine\tools\sync.ps1 pull
+
+Las det pull skriver ut under NYHETER. Det ar andringar de andra
+maskinerna gjort som galler dig.
+
+Ta darefter nasta produkt ur Accepted Elliot som ingen annan maskin redan
+har claimat. Claima den med sync.ps1 claim &lt;handle&gt;. Far du exit 2 ar den
+upptagen, ta nasta. Preflight-kolla handlen i Shopify innan du borjar, och
+bygg sedan enligt runbook\STEGKEDJA.txt fran STEG 0.
+
+Under bygget:
+- Kor sync.ps1 pull fore VARJE nytt STEG, och las nyheterna om det kommer nagra.
+- Kor sync.ps1 progress &lt;handle&gt; &lt;steg&gt; "notering" efter VARJE avklarat STEG.
+- Pusha lardomar med sync.ps1 push "vad du lart dig" DIREKT nar nagot ar lost,
+  inte samlat pa slutet.
+- Slapp produkten med sync.ps1 release &lt;handle&gt; nar den ar klar.
+
+Full autonomi. Fraga mig inte om varje steg, kor och rapportera i slutet.</pre>
+        <div class="kod__rad">
+          <span class="kod__vad">Sedan kör maskinen själv enligt protokollet.</span>
+          <button class="kopiera" type="button" data-mal="prompt">Kopiera</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="steg">
+      <div class="steg__huvud"><span class="steg__nr">+</span><h3 class="steg__rubrik">Har maskinen varit av ett tag?</h3></div>
+      <p class="steg__text">Ingen ny installation. Skicka bara det här, så hämtar den allt nytt själv.</p>
+      <div class="kod">
+        <pre id="atervand">Kor powershell -ExecutionPolicy Bypass -File C:\soldahl-machine\tools\sync.ps1 pull
+och las nyheterna den skriver ut. Kor sedan sync.ps1 hello, den paminner om
+du haller ett claim. Fortsatt darefter enligt PROTOCOL.md.</pre>
+        <div class="kod__rad">
+          <span class="kod__vad">Fungerar på vilken maskin som helst.</span>
+          <button class="kopiera" type="button" data-mal="atervand">Kopiera</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="steg__text" style="padding:0">
+      Hela guiden med felsökning finns som text: <a href="NY-DATOR.txt" style="color:var(--blackt)">NY-DATOR.txt</a>.
+      Den och den här sidan byggs ur samma fil, så de kan inte glida isär.
+    </p>
+  </section>
+</div>
+
+<script>
+(function(){
+  var MALL = {
+    kommandon: document.getElementById("kommandon").textContent,
+    prompt:    document.getElementById("prompt").textContent,
+    atervand:  document.getElementById("atervand").textContent
+  };
+  var val = document.getElementById("idval");
+  var tips = document.getElementById("idTips");
+
+  function rita(){
+    var id = val.value || "M3";
+    // Mallen anvander M3 som platshallare. Byt alla forekomster som star som
+    // eget ord, sa "M3" i "M30" eller i en URL inte rors.
+    var re = /\bM3\b/g;
+    Object.keys(MALL).forEach(function(k){
+      document.getElementById(k).textContent = MALL[k].replace(re, id);
+    });
+  }
+
+  // Nasta lediga id ur samma data som tavlan. Ledigt = aldrig hort av sig.
+  function fyllIdVal(maskiner){
+    var tagna = {};
+    (maskiner || []).forEach(function(m){ if(m.updated) tagna[m.machine] = true; });
+    var forsta = null, html = "";
+    for(var i = 1; i <= 12; i++){
+      var id = "M" + i, upptagen = !!tagna[id];
+      if(!upptagen && forsta === null) forsta = id;
+      html += '<option value="' + id + '"' + (upptagen ? ' disabled' : '') + '>' +
+              id + (upptagen ? " · upptagen" : "") + "</option>";
+    }
+    val.innerHTML = html;
+    val.value = forsta || "M3";
+    tips.innerHTML = forsta
+      ? 'Nästa lediga är <span class="mid">' + forsta + "</span>, redan ifyllt nedan."
+      : "Alla id upp till M12 är tagna.";
+    rita();
+  }
+
+  val.addEventListener("change", rita);
+
+  fetch("data.json?t=" + Date.now(), {cache:"no-store"})
+    .then(function(r){ return r.json(); })
+    .then(function(d){ fyllIdVal(d.maskiner); })
+    .catch(function(){ fyllIdVal([]); });
+
+  // Kopiera-knapparna. Clipboard-API:t kraver https eller localhost, och det
+  // har vi. Faller det anda: markera texten sa den gar att kopiera for hand.
+  [].slice.call(document.querySelectorAll(".kopiera")).forEach(function(k){
+    k.addEventListener("click", function(){
+      var el = document.getElementById(k.getAttribute("data-mal"));
+      var text = el.textContent;
+      function klar(){
+        k.textContent = "Kopierat"; k.classList.add("klar");
+        setTimeout(function(){ k.textContent = "Kopiera"; k.classList.remove("klar"); }, 1800);
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(klar, function(){ markera(el); });
+      } else { markera(el); }
+    });
+  });
+  function markera(el){
+    var r = document.createRange(); r.selectNodeContents(el);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+})();
+</script>
+</body>
+</html>

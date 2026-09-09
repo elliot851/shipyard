@@ -1,0 +1,192 @@
+=====================================================================
+ STARTA SKILLEN PA EN NY DATOR / ETT NYTT CLAUDE CODE-KONTO
+ Steg for steg, med de exakta prompterna. Uppdaterad 2026-09-09.
+=====================================================================
+
+Malet: den nya datorn ska kora EXAKT samma skill som de andra, dela
+samma minne, aldrig krocka med nagon, och halla sig uppdaterad SJALV.
+
+Det ar tre delar. Del 1 gor en manniska. Del 2 ar EN prompt till Claude.
+Del 3 ar vad som hander sedan, automatiskt.
+
+Bevisat 2026-09-08 med M1 och M2: tva konton pa tva datorer samtidigt,
+inga krockar. Inte bevisat an: tre eller fler samtidigt.
+
+
+=====================================================================
+ DEL 1. MANNISKAN: FEM MINUTER VID DEN NYA DATORN
+=====================================================================
+
+1.1  Det har maste finnas forst
+
+   - Ett EGET Claude-konto. Detta ar hela poangen. Delar tva datorer
+     samma konto delar de samma vecko- och 5-timmarstak, och ni far
+     ingen extra kapacitet alls.
+   - Git            git-scm.com
+   - Python         python.org
+   - Claude Code
+   - Kopplingar i det nya Claude-kontot:
+        Shopify         obligatorisk, utan den kan inget byggas
+        Google Drive    behovs i STEG 7 (image ads)
+        Chrome-tillagget "Claude in Chrome"   Firefly och Creative Loop
+
+1.2  Starta Claude Code EN gang, stang sedan
+
+   Oppna Claude Code i mappen
+      C:\Users\<du>\Downloads\Claude CODE
+   (skapa mappen om den inte finns). Stang Claude Code igen.
+
+   Detta MASTE goras fore 1.3. Claude skapar sin egen projektmapp vid
+   forsta starten, och scriptet i 1.3 behover den for att koppla ihop
+   minnet med det delade repot. Hoppar du over det stannar scriptet
+   och sager exakt vad som saknas.
+
+1.3  Fyra kommandon i PowerShell
+
+   git clone https://github.com/elliot851/soldahl-machine.git C:\soldahl-machine
+   cd C:\soldahl-machine
+   powershell -ExecutionPolicy Bypass -File tools\setup-machine.ps1 -MachineId M3
+   powershell -ExecutionPolicy Bypass -File tools\sync.ps1 hello
+
+   Forsta gangen oppnas ett GitHub-inloggningsfonster. Logga in som
+   elliot851. Repot ar privat.
+
+   Byt M3 mot nasta lediga id. Kolla MACHINES.md i repot, eller
+   oversiktssidan https://shipyard.soldahl.se , for att se vilka som ar
+   tagna. Tva datorer far ALDRIG ha samma id.
+
+   "hello" skriver ut datornamnet och anmaler maskinen. Datornamnet ska
+   skilja sig fran de andra maskinernas. Ar det samma namn kor tva
+   kloner pa SAMMA dator, och da ar det ingen ny maskin.
+
+1.4  Ge datorn ett namn pa oversiktssidan (valfritt, gors fran vilken
+     maskin som helst)
+
+   Oppna site\maskinnamn.json och fyll i namnet for det nya id:t.
+   Sedan:  powershell -File tools\sync.ps1 push "M3 namngiven"
+
+Det ar allt manniskan gor.
+
+
+=====================================================================
+ DEL 2. PROMPTEN: EN ENDA, KLISTRA IN SOM FORSTA MEDDELANDE
+=====================================================================
+
+Starta Claude Code i C:\Users\<du>\Downloads\Claude CODE och klistra
+in exakt det har. Byt M3 mot ratt id.
+
+- - - - - - - - - - klipp har - - - - - - - - - -
+Du ar maskin M3 i Soldahls maskinpark.
+
+Las C:\soldahl-machine\PROTOCOL.md forst. Den ar bindande arbetsordning
+och gar fore din egen bedomning. Las sedan
+C:\soldahl-machine\memory\MEMORY.md och
+C:\soldahl-machine\runbook\00-START-HAR.txt.
+
+Kor sedan:
+powershell -ExecutionPolicy Bypass -File C:\soldahl-machine\tools\sync.ps1 pull
+
+Las det pull skriver ut under NYHETER. Det ar andringar de andra
+maskinerna gjort som galler dig.
+
+Ta darefter nasta produkt ur Accepted Elliot som ingen annan maskin redan
+har claimat. Claima den med sync.ps1 claim <handle>. Far du exit 2 ar den
+upptagen, ta nasta. Preflight-kolla handlen i Shopify innan du borjar, och
+bygg sedan enligt runbook\STEGKEDJA.txt fran STEG 0.
+
+Under bygget:
+- Kor sync.ps1 pull fore VARJE nytt STEG, och las nyheterna om det kommer nagra.
+- Kor sync.ps1 progress <handle> <steg> "notering" efter VARJE avklarat STEG.
+- Pusha lardomar med sync.ps1 push "vad du lart dig" DIREKT nar nagot ar lost,
+  inte samlat pa slutet.
+- Slapp produkten med sync.ps1 release <handle> nar den ar klar.
+
+Full autonomi. Fraga mig inte om varje steg, kor och rapportera i slutet.
+- - - - - - - - - - klipp har - - - - - - - - - -
+
+Det ar den enda prompten. Allt annat far maskinen sjalv ur repot.
+
+
+=====================================================================
+ DEL 3. SA HALLER MASKINERNA SIG UPPDATERADE, UTAN PROMPTS
+=====================================================================
+
+Ingen ska behova skicka "kom ihag att ..." till fem datorer. Det loses
+sa har, och det ar redan byggt:
+
+  NYHETER.txt i repot.
+     Andrar nagon ett verktyg, en regel, ett steg i runbooken, hur bilder
+     genereras eller hur copy skrivs: skriv en rad i NYHETER.txt.
+     "sync.ps1 pull" skriver ut varje nyhet en maskin inte sett an,
+     automatiskt, och maskinerna kor pull fore varje STEG. Ingen kan
+     missa en andring. Nyheterna syns ocksa pa oversiktssidan.
+
+  Minnen, facit, runbook och skills ar SAMMA filer pa alla maskiner.
+     setup-machine.ps1 lankar Claudes egna mappar till repot. Pushar en
+     maskin en lardom har alla den vid nasta pull.
+
+  Claims ar git-atomara.
+     Tva maskiner kan inte ta samma produkt. Den som forlorar far exit 2.
+
+  Ingen maskin ror Shopify-temat.
+     Alla produkter anvander samma mall, sa det finns inget att krocka om.
+
+  Rabattkoder: Shopify avvisar dubbletter hart, maskinen tar ett annat
+     suffix.
+
+  Slar en dator i taket mitt i ett bygge tar en annan over:
+     sync.ps1 resume <handle>   visar vad forra maskinen hann
+     sync.ps1 claim <handle>    claim aldre an 6 h far overtas
+     Underlaget ligger i builds\<handle>\ . Shopify ar sanningen,
+     statusfilen bara en genvag.
+
+
+=====================================================================
+ OM EN MASKIN VARIT AV ETT TAG
+=====================================================================
+
+Den behover ingen ny installation och ingen lang prompt. Skicka bara:
+
+- - - - - - - - - - klipp har - - - - - - - - - -
+Kor powershell -ExecutionPolicy Bypass -File C:\soldahl-machine\tools\sync.ps1 pull
+och las nyheterna den skriver ut. Kor sedan sync.ps1 hello, den paminner om
+du haller ett claim. Fortsatt darefter enligt PROTOCOL.md.
+- - - - - - - - - - klipp har - - - - - - - - - -
+
+
+=====================================================================
+ OM NAGOT KRANGLAR
+=====================================================================
+
+"Hittar inte projektkatalogen"
+   Du hoppade over 1.2. Starta Claude Code en gang i ratt mapp, stang,
+   kor om scriptet.
+
+"SAKNAS git" / "SAKNAS Python"
+   Installera, oppna ett NYTT PowerShell-fonster, kor om.
+
+"Author identity unknown"
+   Git-identiteten saknas. setup-machine.ps1 satter den, kor om det.
+
+claim ger exit 2
+   Inte ett fel. Produkten ar upptagen. Ta nasta.
+
+Varning om att en lank pekar mot ett annat repo
+   En gammal klon ligger kvar. Ta bort lanken scriptet skriver ut, kor om.
+
+"STOPP: denna push RADERAR delad kunskap"
+   Sparren fungerar. Ta tillbaka filen med  git checkout HEAD -- <fil>
+   Tvinga aldrig igenom raderingen om du inte VET att filen ska bort.
+
+Claude vet inte vad den ska gora
+   Den laste inte PROTOCOL.md. Skicka: "Las C:\soldahl-machine\PROTOCOL.md
+   och folj den. Du ar M3."
+
+
+=====================================================================
+ HALL DEN HAR FILEN UPPDATERAD
+=====================================================================
+
+Andras nagot i hur en maskin kopplas in eller vad forsta prompten ska
+saga: uppdatera DEN HAR filen i samma push. Den ar det enda stallet dar
+onboardingen finns beskriven, och en foraldrad guide ar varre an ingen.

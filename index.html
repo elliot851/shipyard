@@ -135,13 +135,17 @@
   /* --- Menyn. Tre ord. Inget mer. ---------------------------------- */
   .meny{position:sticky; top:0; z-index:20; background:var(--papper);
         border-bottom:1px solid var(--linje); margin-bottom:30px}
+  /* Fem ord ska fa plats pa en rad aven pa 375 px. Bryts ett ord pa tva rader
+     ser menyn trasig ut, sa hellre en rad som gar att dra i sidled. */
   .meny__inre{max-width:960px; margin:0 auto; display:flex; gap:4px;
-              padding:0 max(18px, env(safe-area-inset-left))}
+              padding:0 max(18px, env(safe-area-inset-left));
+              overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch}
+  .meny__inre::-webkit-scrollbar{display:none}
   @media (min-width:1280px){ .meny__inre{max-width:1120px} }
   .meny a{
-    flex:1 1 0; text-align:center; text-decoration:none; color:var(--dampat);
-    font-size:14px; font-weight:500; letter-spacing:.01em;
-    padding:13px 6px 11px; border-bottom:2px solid transparent;
+    flex:1 0 auto; text-align:center; text-decoration:none; color:var(--dampat);
+    font-size:14px; font-weight:500; letter-spacing:.01em; white-space:nowrap;
+    padding:13px 8px 11px; border-bottom:2px solid transparent;
     margin-bottom:-1px; min-height:44px; display:flex; align-items:center;
     justify-content:center;
   }
@@ -335,6 +339,7 @@
     <a href="#maskiner">Maskiner</a>
     <a href="#nyheter">Nyheter</a>
     <a href="#loggen">Loggen</a>
+    <a href="ny-dator.html">Ny dator</a>
   </div>
 </nav>
 
@@ -666,7 +671,7 @@
 
   // --- Menyn foljer med nedat --------------------------------------
   (function(){
-    var lankar = [].slice.call(document.querySelectorAll(".meny a"));
+    var lankar = [].slice.call(document.querySelectorAll('.meny a[href^="#"]'));
     var delar = lankar.map(function(a){ return document.querySelector(a.getAttribute("href")); });
     if(!window.IntersectionObserver) return;
     var ob = new IntersectionObserver(function(poster){
