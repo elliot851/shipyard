@@ -30,6 +30,24 @@ inga krockar. Inte bevisat an: tre eller fler samtidigt.
         Google Drive    behovs i STEG 7 (image ads)
         Chrome-tillagget "Claude in Chrome"   Firefly och Creative Loop
 
+1.1b LOGGA IN EN GANG i webblasaren, i den Chrome-profil dar tillagget
+     "Claude in Chrome" ar installerat. Claude kan inte logga in sjalv,
+     men nar sessionerna ligger kvar i profilen anvander den dem.
+
+   Det har ar tjansterna ett produktbygge faktiskt anvander:
+
+     GitHub          github.com            elliot851, for klonen i 1.3
+     Shopify-admin   admin.shopify.com     butiken Soldahl
+     Adobe Firefly   firefly.adobe.com     produktbilder och image ads
+     Creative Loop   sharp-screenshot-match.lovable.app
+     ChatGPT         chatgpt.com           deep research, kundavatar
+     Gemini          gemini.google.com     best ads deep analysis
+     Temu            temu.com              referensbilder pa produkten
+     Google          drive.google.com      image ads laddas upp hit
+
+   Ligger uppgifterna redan forifyllda i ett inloggningsformular
+   klickar Claude sjalv pa Logga in. Skriva in ett losenord gor den aldrig.
+
 1.2  Starta Claude Code EN gang, stang sedan
 
    Oppna Claude Code i mappen
