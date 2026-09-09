@@ -34,6 +34,13 @@ inga krockar. Inte bevisat an: tre eller fler samtidigt.
      "Claude in Chrome" ar installerat. Claude kan inte logga in sjalv,
      men nar sessionerna ligger kvar i profilen anvander den dem.
 
+   ⛔ Chrome-tillagget MASTE sitta pa SAMMA dator som Claude Code kor pa.
+     Sitter det pa en annan dator hamnar allt Claude laddar ner (bilder,
+     videor, rapporter) pa fel dator, och bygget stannar. M2 fastnade
+     precis sa 2026-09-09: Claude Code pa GNUGGDATORN2, tillagget pa en
+     annan maskin. Kolla i Claude Code att den anslutna webblasaren har
+     samma datornamn som "hello" skrev ut.
+
    Det har ar tjansterna ett produktbygge faktiskt anvander:
 
      GitHub          github.com            elliot851, for klonen i 1.3
