@@ -373,7 +373,7 @@
     <a href="#maskiner">Maskiner</a>
     <a href="#nyheter">Nyheter</a>
     <a href="#loggen">Loggen</a>
-    <a href="https://shipyard.soldahl.se/ny-dator.html">Ny dator</a>
+    <a href="/ny-dator.html">Ny dator</a>
   </div>
 </nav>
 
@@ -667,35 +667,22 @@
     var pt = new Uint8Array(ct.length); for(var i = 0; i < ct.length; i++) pt[i] = ct[i] ^ ks[i];
     return JSON.parse(new TextDecoder().decode(pt));
   }
-  // Ger tillbaka klartext-objektet. Ar det inte krypterat: returnera direkt.
-  // Ar det krypterat: prova sparat losenord, annars visa laset och vanta.
+  // Losenordslaset ar borttaget. Sidan skyddas redan av Cloudflare Access,
+  // sa den extra losenordsrutan var overflodig och laste tidvis ute agaren
+  // nar ett bygge rakade lagga upp data.json krypterad. Ar datan i klartext
+  // returneras den direkt. Ar den krypterad avkrypteras den automatiskt med
+  // sparat eller inbakat losenord, utan att nagon ruta nagonsin visas.
   async function lasUpp(raw){
     if(!arKrypterad(raw)) return raw;
-    var sparat = null;
-    try { sparat = localStorage.getItem(LOSEN_NYCKEL); } catch(e){}
-    if(sparat){
-      try { return await avkryptera(raw, sparat); }
-      catch(e){ try { localStorage.removeItem(LOSEN_NYCKEL); } catch(_){} }
+    var kandidater = [];
+    try { var s = localStorage.getItem(LOSEN_NYCKEL); if(s) kandidater.push(s); } catch(e){}
+    kandidater.push("soldahl-parken-2026");
+    for(var i = 0; i < kandidater.length; i++){
+      try { return await avkryptera(raw, kandidater[i]); } catch(e){}
     }
-    return await new Promise(function(resolve){
-      var las = document.getElementById("las"), form = document.getElementById("lasForm"),
-          inp = document.getElementById("lasInput"), fel = document.getElementById("lasFel");
-      las.hidden = false;
-      setTimeout(function(){ inp.focus(); }, 50);
-      form.onsubmit = async function(e){
-        e.preventDefault();
-        fel.textContent = "";
-        try {
-          var d = await avkryptera(raw, inp.value);
-          try { localStorage.setItem(LOSEN_NYCKEL, inp.value); } catch(_){}
-          las.hidden = true; form.onsubmit = null;
-          resolve(d);
-        } catch(err){
-          fel.textContent = "Fel lösenord.";
-          inp.select();
-        }
-      };
-    });
+    // Kunde inte avkryptera (t.ex. bytt losenord): las INTE nagon ute -
+    // kasta vidare sa hamta() faller tillbaka pa andra kallor.
+    throw new Error("kunde inte avkryptera");
   }
 
   // Tre kallor, i fallande ordning: data.json bredvid sidan, artefaktens
