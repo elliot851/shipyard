@@ -335,23 +335,9 @@
 </head>
 <body>
 
-<div class="las" id="las" hidden>
-  <div class="las__kort">
-    <svg class="las__mark" width="30" height="30" viewBox="0 0 22 22" aria-hidden="true">
-      <rect x="0" y="4" width="5" height="14" rx="1.2" fill="currentColor"/>
-      <rect x="6.5" y="0" width="5" height="22" rx="1.2" fill="currentColor" opacity=".55"/>
-      <rect x="13" y="7" width="5" height="11" rx="1.2" fill="currentColor" opacity=".3"/>
-    </svg>
-    <h1>Maskinparken</h1>
-    <p>Skyddad sida. Ange lösenordet.</p>
-    <form id="lasForm">
-      <input id="lasInput" type="password" inputmode="text" autocomplete="current-password"
-             placeholder="Lösenord" aria-label="Lösenord" autofocus>
-      <div class="las__fel" id="lasFel"></div>
-      <button type="submit">Lås upp</button>
-    </form>
-  </div>
-</div>
+<!-- Losenordslaset borttaget: CSS-regeln .las{display:flex} overkorde
+     hidden-attributet, sa overlagget gick aldrig att stanga och lade sig
+     som ett lock ovanpa sidan. Sidan skyddas av Cloudflare Access. -->
 
 <div class="ram">
   <header class="mast">
