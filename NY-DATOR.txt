@@ -46,7 +46,7 @@ inga krockar. Inte bevisat an: tre eller fler samtidigt.
      GitHub          github.com            elliot851, for klonen i 1.3
      Shopify-admin   admin.shopify.com     butiken Soldahl
      Adobe Firefly   firefly.adobe.com     produktbilder och image ads
-     Creative Loop   sharp-screenshot-match.lovable.app
+     Creative Loop   creative-loop.pages.dev
      ChatGPT         chatgpt.com           deep research, kundavatar
      Gemini          gemini.google.com     best ads deep analysis
      Temu            temu.com              referensbilder pa produkten
