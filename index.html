@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maskinparken</title>
+<title>Endgame</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjMTAxMjE1Ii8+PHBhdGggZD0iTTMwIDU0QzM0IDQwIDY2IDQwIDcwIDU0TDY0IDY2IDM2IDY2WiIgZmlsbD0iI2VhZWRlZiIvPjxyZWN0IHg9IjQ1IiB5PSIyMiIgd2lkdGg9IjEwIiBoZWlnaHQ9IjI2IiByeD0iMyIgZmlsbD0iI2U3YjI0ZSIvPjxyZWN0IHg9IjM2IiB5PSIyOSIgd2lkdGg9IjI4IiBoZWlnaHQ9IjkiIHJ4PSIzIiBmaWxsPSIjZTdiMjRlIi8+PC9zdmc+">
 <meta name="description" content="Vem bygger vad, hur långt, och vad maskinerna lärt sig av varandra.">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#121417">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Maskinparken">
+<meta name="apple-mobile-web-app-title" content="Endgame">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -339,12 +340,11 @@
 
 <div class="las" id="las" hidden>
   <div class="las__kort">
-    <svg class="las__mark" width="30" height="30" viewBox="0 0 22 22" aria-hidden="true">
-      <rect x="0" y="4" width="5" height="14" rx="1.2" fill="currentColor"/>
-      <rect x="6.5" y="0" width="5" height="22" rx="1.2" fill="currentColor" opacity=".55"/>
-      <rect x="13" y="7" width="5" height="11" rx="1.2" fill="currentColor" opacity=".3"/>
+    <svg class="las__mark" width="34" height="34" viewBox="0 0 100 100" aria-hidden="true">
+      <g fill="currentColor"><path d="M40 55 L60 55 L57 77 L43 77 Z"/><path d="M31 45 C34 34 66 34 69 45 L63.5 57 L36.5 57 Z"/><rect x="31" y="76" width="38" height="9" rx="3"/><rect x="24" y="86" width="52" height="8.5" rx="3"/></g>
+      <g fill="#e7b24e"><rect x="45" y="7" width="10" height="27" rx="3.2"/><rect x="36" y="14" width="28" height="9.5" rx="3.2"/></g>
     </svg>
-    <h1>Maskinparken</h1>
+    <h1>Endgame</h1>
     <p>Skyddad sida. Ange lösenordet.</p>
     <form id="lasForm">
       <input id="lasInput" type="password" inputmode="text" autocomplete="current-password"
@@ -358,12 +358,11 @@
 <div class="ram">
   <header class="mast">
     <div class="mast__id">
-      <svg class="mast__mark" width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
-        <rect x="0" y="4" width="5" height="14" rx="1.2" fill="currentColor"/>
-        <rect x="6.5" y="0" width="5" height="22" rx="1.2" fill="currentColor" opacity=".55"/>
-        <rect x="13" y="7" width="5" height="11" rx="1.2" fill="currentColor" opacity=".3"/>
+      <svg class="mast__mark" width="24" height="24" viewBox="0 0 100 100" aria-hidden="true">
+        <g fill="currentColor"><path d="M40 55 L60 55 L57 77 L43 77 Z"/><path d="M31 45 C34 34 66 34 69 45 L63.5 57 L36.5 57 Z"/><rect x="31" y="76" width="38" height="9" rx="3"/><rect x="24" y="86" width="52" height="8.5" rx="3"/></g>
+        <g fill="#e7b24e"><rect x="45" y="7" width="10" height="27" rx="3.2"/><rect x="36" y="14" width="28" height="9.5" rx="3.2"/></g>
       </svg>
-      <span class="mast__namn">Maskinparken</span>
+      <span class="mast__namn">END<span style="color:#e7b24e">GAME</span></span>
     </div>
     <div class="puls" id="puls"><span class="puls__prick"></span><span id="pulsTxt">hämtar</span></div>
   </header>
@@ -808,13 +807,13 @@
     //    installation. En blob: ar samma ursprung och fungerar bade hostat
     //    och inne i artefakten.
     try{
-      var ikon = '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">' +
-        '<rect width="512" height="512" rx="104" fill="#101215"/>' +
-        '<rect x="112" y="150" width="72" height="212" rx="16" fill="#eaedef"/>' +
-        '<rect x="220" y="104" width="72" height="304" rx="16" fill="#eaedef" opacity=".62"/>' +
-        '<rect x="328" y="196" width="72" height="120" rx="16" fill="#eaedef" opacity=".34"/></svg>';
+      var ikon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512">' +
+        '<rect width="100" height="100" rx="22" fill="#101215"/>' +
+        '<path d="M30 54C34 40 66 40 70 54L64 66 36 66Z" fill="#eaedef"/>' +
+        '<rect x="45" y="22" width="10" height="26" rx="3" fill="#e7b24e"/>' +
+        '<rect x="36" y="29" width="28" height="9" rx="3" fill="#e7b24e"/></svg>';
       var ikonUrl = "data:image/svg+xml;base64," + btoa(ikon);
-      var man = {name:"Maskinparken", short_name:"Maskinparken", start_url:location.href,
+      var man = {name:"Endgame", short_name:"Endgame", start_url:location.href,
         scope:"./", display:"standalone", background_color:"#101215", theme_color:"#101215",
         icons:[{src:ikonUrl, sizes:"any", type:"image/svg+xml", purpose:"any"},
                {src:ikonUrl, sizes:"512x512", type:"image/svg+xml", purpose:"maskable"}]};
