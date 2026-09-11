@@ -317,7 +317,9 @@
   }
 
   /* --- Losenordslas ------------------------------------------------ */
-  .las{position:fixed; inset:0; z-index:100; background:var(--papper);
+  /* :not([hidden]) sa hidden-attributet faktiskt goms overlagget. Utan det
+     overkorde .las{display:flex} hidden och laset lag alltid kvar ovanpa sidan. */
+  .las:not([hidden]){position:fixed; inset:0; z-index:100; background:var(--papper);
        display:flex; align-items:center; justify-content:center; padding:24px}
   .las__kort{width:100%; max-width:360px; text-align:center}
   .las__mark{margin:0 auto 20px; display:block}
@@ -335,9 +337,23 @@
 </head>
 <body>
 
-<!-- Losenordslaset borttaget: CSS-regeln .las{display:flex} overkorde
-     hidden-attributet, sa overlagget gick aldrig att stanga och lade sig
-     som ett lock ovanpa sidan. Sidan skyddas av Cloudflare Access. -->
+<div class="las" id="las" hidden>
+  <div class="las__kort">
+    <svg class="las__mark" width="30" height="30" viewBox="0 0 22 22" aria-hidden="true">
+      <rect x="0" y="4" width="5" height="14" rx="1.2" fill="currentColor"/>
+      <rect x="6.5" y="0" width="5" height="22" rx="1.2" fill="currentColor" opacity=".55"/>
+      <rect x="13" y="7" width="5" height="11" rx="1.2" fill="currentColor" opacity=".3"/>
+    </svg>
+    <h1>Maskinparken</h1>
+    <p>Skyddad sida. Ange lösenordet.</p>
+    <form id="lasForm">
+      <input id="lasInput" type="password" inputmode="text" autocomplete="current-password"
+             placeholder="Lösenord" aria-label="Lösenord" autofocus>
+      <div class="las__fel" id="lasFel"></div>
+      <button type="submit">Lås upp</button>
+    </form>
+  </div>
+</div>
 
 <div class="ram">
   <header class="mast">
@@ -653,22 +669,35 @@
     var pt = new Uint8Array(ct.length); for(var i = 0; i < ct.length; i++) pt[i] = ct[i] ^ ks[i];
     return JSON.parse(new TextDecoder().decode(pt));
   }
-  // Losenordslaset ar borttaget. Sidan skyddas redan av Cloudflare Access,
-  // sa den extra losenordsrutan var overflodig och laste tidvis ute agaren
-  // nar ett bygge rakade lagga upp data.json krypterad. Ar datan i klartext
-  // returneras den direkt. Ar den krypterad avkrypteras den automatiskt med
-  // sparat eller inbakat losenord, utan att nagon ruta nagonsin visas.
+  // Ger tillbaka klartext-objektet. Ar det inte krypterat: returnera direkt.
+  // Ar det krypterat: prova sparat losenord, annars visa laset och vanta.
   async function lasUpp(raw){
     if(!arKrypterad(raw)) return raw;
-    var kandidater = [];
-    try { var s = localStorage.getItem(LOSEN_NYCKEL); if(s) kandidater.push(s); } catch(e){}
-    kandidater.push("soldahl-parken-2026");
-    for(var i = 0; i < kandidater.length; i++){
-      try { return await avkryptera(raw, kandidater[i]); } catch(e){}
+    var sparat = null;
+    try { sparat = localStorage.getItem(LOSEN_NYCKEL); } catch(e){}
+    if(sparat){
+      try { return await avkryptera(raw, sparat); }
+      catch(e){ try { localStorage.removeItem(LOSEN_NYCKEL); } catch(_){} }
     }
-    // Kunde inte avkryptera (t.ex. bytt losenord): las INTE nagon ute -
-    // kasta vidare sa hamta() faller tillbaka pa andra kallor.
-    throw new Error("kunde inte avkryptera");
+    return await new Promise(function(resolve){
+      var las = document.getElementById("las"), form = document.getElementById("lasForm"),
+          inp = document.getElementById("lasInput"), fel = document.getElementById("lasFel");
+      las.hidden = false;
+      setTimeout(function(){ inp.focus(); }, 50);
+      form.onsubmit = async function(e){
+        e.preventDefault();
+        fel.textContent = "";
+        try {
+          var d = await avkryptera(raw, inp.value);
+          try { localStorage.setItem(LOSEN_NYCKEL, inp.value); } catch(_){}
+          las.hidden = true; form.onsubmit = null;
+          resolve(d);
+        } catch(err){
+          fel.textContent = "Fel lösenord.";
+          inp.select();
+        }
+      };
+    });
   }
 
   // Tre kallor, i fallande ordning: data.json bredvid sidan, artefaktens

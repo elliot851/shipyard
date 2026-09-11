@@ -77,7 +77,7 @@ inga krockar. Inte bevisat an: tre eller fler samtidigt.
    elliot851. Repot ar privat.
 
    Byt M3 mot nasta lediga id. Kolla MACHINES.md i repot, eller
-   oversiktssidan https://shipyard.soldahl.se , for att se vilka som ar
+   oversiktssidan https://shipyard-26m.pages.dev , for att se vilka som ar
    tagna. Tva datorer far ALDRIG ha samma id.
 
    "hello" skriver ut datornamnet och anmaler maskinen. Datornamnet ska

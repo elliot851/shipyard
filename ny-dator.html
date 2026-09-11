@@ -314,7 +314,9 @@
   }
 
   /* --- Losenordslas ------------------------------------------------ */
-  .las{position:fixed; inset:0; z-index:100; background:var(--papper);
+  /* :not([hidden]) sa hidden-attributet faktiskt goms overlagget. Utan det
+     overkorde .las{display:flex} hidden och laset lag alltid kvar ovanpa sidan. */
+  .las:not([hidden]){position:fixed; inset:0; z-index:100; background:var(--papper);
        display:flex; align-items:center; justify-content:center; padding:24px}
   .las__kort{width:100%; max-width:360px; text-align:center}
   .las__mark{margin:0 auto 20px; display:block}
@@ -402,8 +404,17 @@
   <section>
     <div class="rubrik"><h2>Koppla in en ny dator</h2></div>
     <p class="ingress">
-      Tre saker, i ordning. Del 1 och 2 gör du vid den nya datorn, del 3 klistrar du in i Claude.
-      Sedan sköter maskinen sig själv. Maskin-id nedan är <b>nästa lediga</b>, byt om du vill.
+      <b>🤖 Är du en Claude Code-agent som öppnat den här sidan?</b> Då är den här sidan din
+      hela arbetsorder. Läs den uppifrån och ner och gör exakt det som står. Du kollar
+      <b>själv</b> att Git, Python och Claude Code finns, och att du är inloggad på tjänsterna i
+      steg 1 — saknas en inloggning, be din människa logga in åt dig (du loggar <b>aldrig</b> in
+      själv). Kör sedan de fyra kommandona (steg 2) och första prompten (steg 3), och följ
+      <span class="mono">PROTOCOL.md</span>. Läs "Så funkar parken" nedan så förstår du varför du
+      aldrig krockar med de andra maskinerna.
+    </p>
+    <p class="ingress">
+      Maskin-id nedan är <b>nästa lediga</b> — behåll det om inget annat sägs. Hela guiden med
+      felsökning i klartext: <a href="NY-DATOR.txt" style="color:var(--blackt)">NY-DATOR.txt</a>.
     </p>
 
     <div class="steg">
@@ -498,6 +509,27 @@ du haller ett claim. Fortsatt darefter enligt PROTOCOL.md.</pre>
           <button class="kopiera" type="button" data-mal="atervand">Kopiera</button>
         </div>
       </div>
+    </div>
+
+    <div class="steg">
+      <div class="steg__huvud"><span class="steg__nr">i</span><h3 class="steg__rubrik">Så funkar parken — och varför ni aldrig krockar</h3></div>
+      <p class="steg__text">Flera datorer kör samma skill samtidigt mot samma repo. Att ni aldrig bygger
+         samma sak, aldrig skriver över varandra och alltid är uppdaterade är <b>inbyggt</b>. Förstå
+         det, så litar du på systemet i stället för att fråga:</p>
+      <ul>
+        <li><b>Claims är git-atomära.</b> Före bygget claimar du produkten: <span class="mono">sync.ps1 claim &lt;handle&gt;</span>.
+            Två maskiner kan aldrig ta samma — den som förlorar får <span class="mono">exit 2</span> och tar nästa. Det är inte ett fel.</li>
+        <li><b>Delat minne, facit, runbook och skills.</b> <span class="mono">setup-machine.ps1</span> länkar dina Claude-mappar till repot.
+            Pushar en maskin en lärdom har alla den vid nästa <span class="mono">pull</span>.</li>
+        <li><b>NYHETER auto-synkas.</b> Kör <span class="mono">sync.ps1 pull</span> före VARJE steg. Den skriver ut varje ändring
+            du inte sett än (nya regler, verktyg, byggsätt). Ingen kan missa en ändring.</li>
+        <li><b>Ingen rör Shopify-temat.</b> Alla produkter använder samma mall, så det finns inget att krocka om.</li>
+        <li><b>Rabattkoder:</b> Shopify avvisar dubbletter hårt — maskinen tar automatiskt ett annat suffix.</li>
+        <li><b>Kraschar en maskin mitt i:</b> en annan tar över. <span class="mono">sync.ps1 resume &lt;handle&gt;</span> visar vad förra hann;
+            ett claim äldre än 6 h får övertas. Underlaget ligger i <span class="mono">builds\&lt;handle&gt;\</span>; Shopify är sanningen.</li>
+      </ul>
+      <p class="steg__text">Kort sagt: <b>claima först, pull före varje steg, rapportera progress, släpp när klar.</b>
+         Följer du <span class="mono">PROTOCOL.md</span> kan ni köra hur många maskiner som helst utan att krocka.</p>
     </div>
 
     <p class="steg__text" style="padding:0">
