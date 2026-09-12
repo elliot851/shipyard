@@ -1,0 +1,15 @@
+# HTML far ALDRIG cachas. Utan detta serverar webblasaren en gammal
+# index.html (t.ex. den forna losenordslas-versionen) och nya deployer
+# syns aldrig utan hard-reload. Data.json samma sak, den ska alltid vara farsk.
+
+/*.html
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/*.json
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/NY-DATOR.txt
+  Cache-Control: no-cache, no-store, must-revalidate
