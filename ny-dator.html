@@ -473,15 +473,19 @@ Las C:\soldahl-machine\PROTOCOL.md forst. Den ar bindande arbetsordning
 och gar fore din egen bedomning. Las sedan
 C:\soldahl-machine\memory\MEMORY.md,
 C:\soldahl-machine\runbook\00-START-HAR.txt,
-C:\soldahl-machine\runbook\03-HARDA-GRINDAR.txt (G1-G8, bygget STOPPAR vid
-saknat moment) och C:\soldahl-machine\runbook\04-FEEDBACK-LOOP.txt (sa fangar
-du in Elliots feedback till HELA parken).
+C:\soldahl-machine\runbook\03-HARDA-GRINDAR.txt (G1-G9, bygget STOPPAR vid
+saknat moment), C:\soldahl-machine\runbook\05-SLUTKONTROLL.txt (G9: kor
+slutkontroll-svepet "py tools\kvalitetskoll.py" vid sessionsstart och fore
+Rotche-overlamning, sa ingen produkt saknar recensioner/jamforelsebilder/spec)
+och C:\soldahl-machine\runbook\04-FEEDBACK-LOOP.txt (sa fangar du in Elliots
+feedback till HELA parken).
 
 Kor sedan:
 powershell -ExecutionPolicy Bypass -File C:\soldahl-machine\tools\sync.ps1 pull
 
 Las det pull skriver ut under NYHETER. Det ar andringar de andra
-maskinerna gjort som galler dig.
+maskinerna gjort som galler dig. Kor darefter slutkontroll-svepet en gang
+(se 05-SLUTKONTROLL.txt) och atgarda ev. FAIL pa produkter du byggt.
 
 Ta darefter nasta produkt ur Accepted Elliot som ingen annan maskin redan
 har claimat. Claima den med sync.ps1 claim &lt;handle&gt;. Far du exit 2 ar den
@@ -493,6 +497,8 @@ Under bygget:
 - Kor sync.ps1 progress &lt;handle&gt; &lt;steg&gt; "notering" efter VARJE avklarat STEG.
 - Pusha lardomar med sync.ps1 push "vad du lart dig" DIREKT nar nagot ar lost,
   inte samlat pa slutet.
+- Kor G9 SLUTKONTROLL (py tools\kvalitetskoll.py mot Shopify, se 05-SLUTKONTROLL.txt)
+  fore STEG 8 Rotche-overlamning. Ett FAIL = produkten ar INTE klar.
 - Slapp produkten med sync.ps1 release &lt;handle&gt; nar den ar klar.
 
 Full autonomi. Fraga mig inte om varje steg, kor och rapportera i slutet.</pre>

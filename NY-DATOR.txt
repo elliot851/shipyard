@@ -1,6 +1,6 @@
 =====================================================================
  STARTA SKILLEN PA EN NY DATOR / ETT NYTT CLAUDE CODE-KONTO
- Steg for steg, med de exakta prompterna. Uppdaterad 2026-09-09.
+ Steg for steg, med de exakta prompterna. Uppdaterad 2026-09-13.
 =====================================================================
 
 Malet: den nya datorn ska kora EXAKT samma skill som de andra, dela
@@ -116,15 +116,19 @@ Las C:\soldahl-machine\PROTOCOL.md forst. Den ar bindande arbetsordning
 och gar fore din egen bedomning. Las sedan
 C:\soldahl-machine\memory\MEMORY.md,
 C:\soldahl-machine\runbook\00-START-HAR.txt,
-C:\soldahl-machine\runbook\03-HARDA-GRINDAR.txt (G1-G8, bygget STOPPAR vid
-saknat moment) och C:\soldahl-machine\runbook\04-FEEDBACK-LOOP.txt (sa fangar
-du in Elliots feedback till HELA parken).
+C:\soldahl-machine\runbook\03-HARDA-GRINDAR.txt (G1-G9, bygget STOPPAR vid
+saknat moment), C:\soldahl-machine\runbook\05-SLUTKONTROLL.txt (G9: kor
+slutkontroll-svepet "py tools\kvalitetskoll.py" vid sessionsstart och fore
+Rotche-overlamning, sa ingen produkt saknar recensioner/jamforelsebilder/spec)
+och C:\soldahl-machine\runbook\04-FEEDBACK-LOOP.txt (sa fangar du in Elliots
+feedback till HELA parken).
 
 Kor sedan:
 powershell -ExecutionPolicy Bypass -File C:\soldahl-machine\tools\sync.ps1 pull
 
 Las det pull skriver ut under NYHETER. Det ar andringar de andra
-maskinerna gjort som galler dig.
+maskinerna gjort som galler dig. Kor darefter slutkontroll-svepet en gang
+(se 05-SLUTKONTROLL.txt) och atgarda ev. FAIL pa produkter du byggt.
 
 Ta darefter nasta produkt ur Accepted Elliot som ingen annan maskin redan
 har claimat. Claima den med sync.ps1 claim <handle>. Far du exit 2 ar den
@@ -136,6 +140,8 @@ Under bygget:
 - Kor sync.ps1 progress <handle> <steg> "notering" efter VARJE avklarat STEG.
 - Pusha lardomar med sync.ps1 push "vad du lart dig" DIREKT nar nagot ar lost,
   inte samlat pa slutet.
+- Kor G9 SLUTKONTROLL (py tools\kvalitetskoll.py mot Shopify, se 05-SLUTKONTROLL.txt)
+  fore STEG 8 Rotche-overlamning. Ett FAIL = produkten ar INTE klar.
 - Slapp produkten med sync.ps1 release <handle> nar den ar klar.
 
 Full autonomi. Fraga mig inte om varje steg, kor och rapportera i slutet.
@@ -176,12 +182,19 @@ sa har, och det ar redan byggt:
      en ny minnes-/runbook-fil utan nyckelord. En rapport eller chattkommentar
      racker inte - da lar sig ingen annan maskin nagot.
 
-  Harda grindar G1-G8 (runbook/03-HARDA-GRINDAR.txt).
+  Harda grindar G1-G9 (runbook/03-HARDA-GRINDAR.txt).
      Bygget STOPPAR om ett obligatoriskt moment saknas: ALLA produktbilder i
      ChatGPT med referenser + ultrarealism (personer far ALDRIG se AI ut),
-     jamforelsetabell med bara konkurrenter, spec-/recensionsbild nar de anvands,
-     COGS godkand av Elliot fore rabattkoder, koherent styckpris. Facit = de
-     forsta produkterna, 10 av 10. Att flagga och kora vidare ar forbjudet.
+     jamforelsetabell med bara konkurrenter + BILD per kolumn, spec-/recensionsbild
+     nar de anvands, COGS godkand av Elliot fore rabattkoder, koherent styckpris,
+     och G9 SLUTKONTROLL (kvalitetskoll.py mot Shopify) fore Rotche-overlamning.
+     Facit = de forsta produkterna, 10 av 10. Att flagga och kora vidare ar forbjudet.
+
+  Slutkontroll G9 (runbook/05-SLUTKONTROLL.txt, tools/kvalitetskoll.py).
+     Shopify ar sanningen: skriptet laser produkten och sager PASS/FAIL sa ingen
+     produkt slapps med saknade recensioner (consumio_reviews), jamforelsebilder,
+     spec-bild, review-bild osv. Kor svepet vid sessionsstart (atgarda dina egna
+     FAIL) och G9 fore varje Rotche-overlamning. Gemensam lista: builds/KVALITETSKOLL-RAPPORT.txt.
 
   Claims ar git-atomara.
      Tva maskiner kan inte ta samma produkt. Den som forlorar far exit 2.
