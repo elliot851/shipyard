@@ -105,8 +105,11 @@ Du ar maskin M3 i Soldahls maskinpark.
 
 Las C:\soldahl-machine\PROTOCOL.md forst. Den ar bindande arbetsordning
 och gar fore din egen bedomning. Las sedan
-C:\soldahl-machine\memory\MEMORY.md och
-C:\soldahl-machine\runbook\00-START-HAR.txt.
+C:\soldahl-machine\memory\MEMORY.md,
+C:\soldahl-machine\runbook\00-START-HAR.txt,
+C:\soldahl-machine\runbook\03-HARDA-GRINDAR.txt (G1-G8, bygget STOPPAR vid
+saknat moment) och C:\soldahl-machine\runbook\04-FEEDBACK-LOOP.txt (sa fangar
+du in Elliots feedback till HELA parken).
 
 Kor sedan:
 powershell -ExecutionPolicy Bypass -File C:\soldahl-machine\tools\sync.ps1 pull
@@ -149,6 +152,27 @@ sa har, och det ar redan byggt:
   Minnen, facit, runbook och skills ar SAMMA filer pa alla maskiner.
      setup-machine.ps1 lankar Claudes egna mappar till repot. Pushar en
      maskin en lardom har alla den vid nasta pull.
+
+  Facit-grinden + kanselsprot (facit/facit_hook.py, kopplas av setup-machine).
+     Vid VARJE meddelande: (a) matchar nyckelord i Elliots text/URL och tvingar
+     in ratt facit-fil i kontexten, och (b) gor git fetch och skriver ut de
+     olasta NYHETER-rubrikerna om origin ligger fore, med order att pulla FORE
+     nasta steg. Maskinen kanner alltsa av ny feedback mitt i bygget, utan att
+     nagon promptar den. Starta om Claude Code efter setup sa hooken laddas.
+
+  Feedback-loopen ar TVINGAD (runbook/04-FEEDBACK-LOOP.txt).
+     Ger Elliot feedback ("fel", "saknas", "gor aldrig", "fran och med nu"...):
+     skriv regeln i ratt fil -> nyckelord i facit/regler.json -> rad i
+     NYHETER.txt -> sync.ps1 push, INNAN du sager "fixat". sync.ps1 push VAGRAR
+     en ny minnes-/runbook-fil utan nyckelord. En rapport eller chattkommentar
+     racker inte - da lar sig ingen annan maskin nagot.
+
+  Harda grindar G1-G8 (runbook/03-HARDA-GRINDAR.txt).
+     Bygget STOPPAR om ett obligatoriskt moment saknas: ALLA produktbilder i
+     ChatGPT med referenser + ultrarealism (personer far ALDRIG se AI ut),
+     jamforelsetabell med bara konkurrenter, spec-/recensionsbild nar de anvands,
+     COGS godkand av Elliot fore rabattkoder, koherent styckpris. Facit = de
+     forsta produkterna, 10 av 10. Att flagga och kora vidare ar forbjudet.
 
   Claims ar git-atomara.
      Tva maskiner kan inte ta samma produkt. Den som forlorar far exit 2.
