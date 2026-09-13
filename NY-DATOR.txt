@@ -70,15 +70,19 @@ inga krockar. Inte bevisat an: tre eller fler samtidigt.
 
    git clone https://github.com/elliot851/soldahl-machine.git C:\soldahl-machine
    cd C:\soldahl-machine
-   powershell -ExecutionPolicy Bypass -File tools\setup-machine.ps1 -MachineId M3
+   powershell -ExecutionPolicy Bypass -File tools\setup-machine.ps1
    powershell -ExecutionPolicy Bypass -File tools\sync.ps1 hello
 
    Forsta gangen oppnas ett GitHub-inloggningsfonster. Logga in som
    elliot851. Repot ar privat.
 
-   Byt M3 mot nasta lediga id. Kolla MACHINES.md i repot, eller
-   oversiktssidan https://shipyard-26m.pages.dev , for att se vilka som ar
-   tagna. Tva datorer far ALDRIG ha samma id.
+   ⭐ INGET id behover valjas langre. setup-machine.ps1 tilldelar nasta
+   LEDIGA maskin-id automatiskt och ATOMART (assign-machine-id.ps1, samma
+   git-race-skydd som produkt-claims), skriver det till machine.txt och
+   skriver ut det ("Tilldelat maskin-id: M5"). Startar du skillen pa tre
+   datorer samtidigt far de M5, M6, M7 - aldrig samma. Vill du ateranvanda
+   ett specifikt id (t.ex. en dator som byggts om) kan du lagga till
+   -MachineId M3, men normalt utelamnar du det.
 
    "hello" skriver ut datornamnet och anmaler maskinen. Datornamnet ska
    skilja sig fran de andra maskinernas. Ar det samma namn kor tva
@@ -98,10 +102,15 @@ Det ar allt manniskan gor.
 =====================================================================
 
 Starta Claude Code i C:\Users\<du>\Downloads\Claude CODE och klistra
-in exakt det har. Byt M3 mot ratt id.
+in EXAKT det har. Det ar UNIVERSELLT - samma prompt funkar pa vilken dator
+som helst, inget id ska bytas. Maskinen laser sitt eget id ur machine.txt
+(det som setup tilldelade automatiskt).
 
 - - - - - - - - - - klipp har - - - - - - - - - -
-Du ar maskin M3 i Soldahls maskinpark.
+Du ar en maskin i Soldahls maskinpark. Ditt maskin-id star i
+C:\soldahl-machine\machine.txt (tilldelades automatiskt vid setup) - las det
+och anvand det i allt du gor: KORLOGG, progress, push och nar du ramar in
+dina svar (borja med "💻 M<id>", avsluta med "💻 M<id> . Endgame").
 
 Las C:\soldahl-machine\PROTOCOL.md forst. Den ar bindande arbetsordning
 och gar fore din egen bedomning. Las sedan
@@ -229,7 +238,7 @@ Varning om att en lank pekar mot ett annat repo
 
 Claude vet inte vad den ska gora
    Den laste inte PROTOCOL.md. Skicka: "Las C:\soldahl-machine\PROTOCOL.md
-   och folj den. Du ar M3."
+   och folj den. Ditt maskin-id star i C:\soldahl-machine\machine.txt."
 
 
 =====================================================================

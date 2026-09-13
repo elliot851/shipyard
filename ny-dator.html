@@ -451,7 +451,7 @@
       <div class="kod">
         <pre id="kommandon">git clone https://github.com/elliot851/soldahl-machine.git C:\soldahl-machine
 cd C:\soldahl-machine
-powershell -ExecutionPolicy Bypass -File tools\setup-machine.ps1 -MachineId M3
+powershell -ExecutionPolicy Bypass -File tools\setup-machine.ps1
 powershell -ExecutionPolicy Bypass -File tools\sync.ps1 hello</pre>
         <div class="kod__rad">
           <span class="kod__vad">Klistra in i PowerShell. Logga in som elliot851 när GitHub frågar.</span>
@@ -464,7 +464,10 @@ powershell -ExecutionPolicy Bypass -File tools\sync.ps1 hello</pre>
       <div class="steg__huvud"><span class="steg__nr">3</span><h3 class="steg__rubrik">Första meddelandet till Claude</h3></div>
       <p class="steg__text">Starta Claude Code i samma mapp och klistra in exakt det här. Det är den enda prompten som behövs.</p>
       <div class="kod">
-        <pre id="prompt">Du ar maskin M3 i Soldahls maskinpark.
+        <pre id="prompt">Du ar en maskin i Soldahls maskinpark. Ditt maskin-id star i
+C:\soldahl-machine\machine.txt (tilldelades automatiskt vid setup) - las det
+och anvand det i allt du gor: KORLOGG, progress, push och nar du ramar in
+dina svar (borja med "💻 M&lt;id&gt;", avsluta med "💻 M&lt;id&gt; . Endgame").
 
 Las C:\soldahl-machine\PROTOCOL.md forst. Den ar bindande arbetsordning
 och gar fore din egen bedomning. Las sedan
