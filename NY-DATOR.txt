@@ -235,6 +235,34 @@ sa har, och det ar redan byggt:
 
 
 =====================================================================
+ DEL 4. PRODUKTJAKTEN (Daily winning product finder) PA DENNA MASKIN
+=====================================================================
+
+Varje maskin jagar produkter i SITT snitt (produktjakt\marknader.json), samma
+system som byggena: git-atomara claims (tools\jakt.ps1), NYHETER, chatt i
+produktjakt\JAKTLOGG.txt. Manniskan gor EN sak:
+
+4.1  Skapa den schemalagda tasken i Claude Code-appen (Tasks i sidofaltet):
+       Namn:     Daily winning product finder
+       Tid:      04:00 varje dag
+       Modell:   Opus 4.8, reasoning Medium (Elliots beslut 2026-09-14)
+       Prompt:   Las C:\soldahl-machine\produktjakt\START.md och folj den.
+       Permission mode: Bypass permissions (annars stannar den vid forsta verktyget)
+     Det ar hela prompten. Allt annat ligger i START.md i repot, sa en andring
+     dar nar alla datorer vid nasta korning.
+
+4.2  Logga in i den Chrome dar tillagget sitter, pa
+       app.winninghunter.com   (Elliots Standard-konto, delat)
+       creative-loop.pages.dev (westrosbusiness@gmail.com)
+     Claude loggar aldrig in sjalv. Ar nagon utloggad kor den de vagor som inte
+     behover den och skriver i JAKTLOGG vad som saknades.
+
+4.3  Kor en gang for hand for att se att maskinen har ett snitt:
+       powershell -ExecutionPolicy Bypass -File C:\soldahl-machine	ools\jakt.ps1 start
+     Star det "INGET SNITT": ta den lediga raden i marknader.json, skriv in
+     maskinens id, sync.ps1 push "M5 snitt", klart.
+
+=====================================================================
  OM EN MASKIN VARIT AV ETT TAG
 =====================================================================
 
