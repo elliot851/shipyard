@@ -154,6 +154,15 @@ Shopify. Bygg enligt <REPO>\runbook\STEGKEDJA.txt fran STEG 0. Under bygget: pul
 STEG, progress efter VARJE STEG, push lardomar DIREKT, kor G9 SLUTKONTROLL fore Rotche-
 overlamning (ett FAIL = ej klar), release nar produkten ar klar.
 
+STEG G - PRODUKTJAKTEN (galler ALLA maskiner, 2026-09-16): kontrollera med list_scheduled_tasks
+att den schemalagda tasken "daily-winning-product-finder" finns pa den har datorn. Saknas den: skapa
+den SJALV med create_scheduled_task (taskId daily-winning-product-finder, title "Daily winning product
+finder", cronExpression "0 4 * * *", prompt EXAKT: "Las C:\soldahl-machine\produktjakt\START.md och
+folj den."). Kor sedan en gang: powershell -ExecutionPolicy Bypass -File <REPO>	ools\jakt.ps1 start
+och verifiera att du har ett snitt (annars: ta den lediga raden i produktjakt\marknader.json, pusha).
+Modell/permission (Opus 4.8 Medium, Bypass) satts av Elliot i taskens editor - skriv i JAKTLOGG att
+tasken ar skapad sa han vet att den ska stallas in. Las produktjakt\PROTOKOLL.md.
+
 Full autonomi. Kor och rapportera i slutet. Fraga aldrig "How do you want to proceed" -
 det finns alltid ett oppet jobb (nasta produkt), och saknas nagot bootstrappar du det sjalv.
 
@@ -250,6 +259,10 @@ produktjakt\JAKTLOGG.txt. Manniskan gor EN sak:
        Permission mode: Bypass permissions (annars stannar den vid forsta verktyget)
      Det ar hela prompten. Allt annat ligger i START.md i repot, sa en andring
      dar nar alla datorer vid nasta korning.
+     ALTERNATIV: du behover inte skapa den for hand. Endgame-prompten (DEL 2,
+     STEG G) far maskinen att skapa tasken sjalv med create_scheduled_task vid
+     nasta session. Det enda du da gor i appen ar att stalla modell (Opus 4.8
+     Medium) och permission mode (Bypass) pa tasken - det kan Claude inte.
 
 4.2  Logga in i den Chrome dar tillagget sitter, pa
        app.winninghunter.com   (Elliots Standard-konto, delat)

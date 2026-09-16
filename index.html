@@ -431,6 +431,20 @@
     <div class="logg"><div class="logg__rulle" id="logg"><div class="tomt">Hämtar…</div></div></div>
   </section>
 
+  <section id="produktjakt">
+    <div class="rubrik"><h2>Produktjakten</h2><span class="rakning" id="jaktRakning"></span></div>
+    <p class="ingress">Daily winning product finder på alla maskiner. Ett marknadssnitt per maskin,
+       lotter claimas i git (<code>jakt.ps1 claim</code>), varje kort registreras i SKÖRD före Add.
+       Chatten nedan är <code>produktjakt/JAKTLOGG.txt</code>, samma rader maskinerna ser vid <code>jakt.ps1 start</code>.</p>
+    <div class="nyheter" id="jaktMaskiner"><div class="tomt">Hämtar…</div></div>
+    <div class="rubrik" style="margin-top:18px"><h2 style="font-size:16px">Aktiva lotter</h2><span class="rakning" id="jaktLottRakning"></span></div>
+    <div class="nyheter" id="jaktLotter"><div class="tomt">Hämtar…</div></div>
+    <div class="rubrik" style="margin-top:18px"><h2 style="font-size:16px">Senaste kort (SKÖRD)</h2><span class="rakning" id="jaktSkordRakning"></span></div>
+    <div class="logg"><div class="logg__rulle" id="jaktSkord"><div class="tomt">Hämtar…</div></div></div>
+    <div class="rubrik" style="margin-top:18px"><h2 style="font-size:16px">Chatten (JAKTLOGG)</h2><span class="rakning" id="jaktLoggRakning"></span></div>
+    <div class="logg"><div class="logg__rulle" id="jaktLogg"><div class="tomt">Hämtar…</div></div></div>
+  </section>
+
   <button class="knapp" id="installera" type="button" hidden>Lägg till på hemskärmen</button>
   <p class="tips" id="iosTips" hidden>
     Vill du ha den som app: tryck på <b>Dela</b> längst ner och välj <b>Lägg till på hemskärmen</b>.
@@ -609,11 +623,58 @@
     }).join("");
   }
 
+  function ritaProduktjakt(d){
+    var pj = d.produktjakt || {};
+    var mask = pj.maskiner || [], lotter = pj.lotter || [], skord = pj.skord || [], logg = pj.logg || [];
+    var s7 = pj.skord7 || {};
+    document.getElementById("jaktMaskiner").innerHTML = mask.length
+      ? mask.map(function(m){
+          var snitt = (m.marknader && m.marknader.length) ? m.marknader.join(" + ") : "inget snitt";
+          var lott = m.lott ? "kör " + m.lott : "ingen lott just nu";
+          return '<div class="nyhet"><div class="nyhet__rad">' +
+                 '<span class="nyhet__datum mono">' + esc(m.machine) + "</span>" +
+                 '<span class="nyhet__rubrik">' + esc(snitt) + "</span>" +
+                 '<span class="nyhet__datum mono">' + esc(lott) + " · " + esc(s7[m.machine] || 0) + " kort/7d" +
+                 (m.updated ? " · " + esc(sedan(m.updated)) : "") + "</span></div>" +
+                 (m.note ? '<p class="nyhet__text">' + esc(m.note) + "</p>" : "") + "</div>";
+        }).join("")
+      : '<div class="tomt">Ingen maskin har startat produktjakten än.</div>';
+    var tot = 0; Object.keys(s7).forEach(function(k){ tot += s7[k]; });
+    document.getElementById("jaktRakning").textContent = tot ? tot + " kort senaste 7 dygn" : "";
+    document.getElementById("jaktLotter").innerHTML = lotter.length
+      ? lotter.map(function(c){
+          return '<div class="nyhet"><div class="nyhet__rad">' +
+                 '<span class="nyhet__datum mono">' + esc(c.machine) + "</span>" +
+                 '<span class="nyhet__rubrik">' + esc(c.lott) + "</span>" +
+                 '<span class="nyhet__datum mono">' + esc(sedan(c.claimed)) + "</span></div>" +
+                 (c.params ? '<p class="nyhet__text">' + esc(c.params) + "</p>" : "") + "</div>";
+        }).join("")
+      : '<div class="tomt">Inga lotter claimade just nu.</div>';
+    document.getElementById("jaktLottRakning").textContent = lotter.length ? lotter.length + " st" : "";
+    document.getElementById("jaktSkord").innerHTML = skord.length
+      ? skord.map(function(k){
+          return '<div class="post"><span class="post__vem mono">' + esc(k.machine) + "-" + esc(k.vag) + "</span>" +
+                 '<span class="post__text">' + esc(k.brand) + " · " + esc(k.marknad) + " · " + esc(k.active) + " aktiva · " + esc(k.rubrik) + "</span>" +
+                 '<span class="post__nar mono">' + esc(k.nar) + "</span></div>";
+        }).join("")
+      : '<div class="tomt">Inga kort registrerade än.</div>';
+    document.getElementById("jaktSkordRakning").textContent = skord.length ? "senaste " + skord.length : "";
+    document.getElementById("jaktLogg").innerHTML = logg.length
+      ? logg.map(function(r){
+          return '<div class="post"><span class="post__vem mono">' + esc(r.machine) + "</span>" +
+                 '<span class="post__text">' + esc(r.text) + "</span>" +
+                 '<span class="post__nar mono">' + esc(r.nar) + "</span></div>";
+        }).join("")
+      : '<div class="tomt">Tyst i chatten.</div>';
+    document.getElementById("jaktLoggRakning").textContent = logg.length ? "senaste " + logg.length : "";
+  }
+
   function rita(d){
     ritaLegend(d);
     ritaMaskiner(d);
     ritaNyheter(d);
     ritaLogg(d);
+    ritaProduktjakt(d);
   }
 
   function puls(lage, text){
@@ -717,6 +778,7 @@
         las: bas.las,
         lardomar: S.lardomar === null ? bas.lardomar : S.lardomar,
         nyheter: bas.nyheter || [],
+        produktjakt: bas.produktjakt || {},
         maskiner: ids.map(function(id){
           var m = S.maskiner[id] || {};
           return {machine:id, product:m.product || "", steg:m.steg, namn:m.namn || "",
