@@ -1,6 +1,6 @@
 =====================================================================
  STARTA SKILLEN PA EN NY DATOR / ETT NYTT CLAUDE CODE-KONTO
- Steg for steg, med de exakta prompterna. Uppdaterad 2026-09-13.
+ Steg for steg, med de exakta prompterna. Uppdaterad 2026-09-18.
 =====================================================================
 
 Malet: den nya datorn ska kora EXAKT samma skill som de andra, dela
@@ -45,12 +45,22 @@ inga krockar. Inte bevisat an: tre eller fler samtidigt.
 
      GitHub          github.com            elliot851, for klonen i 1.3
      Shopify-admin   admin.shopify.com     butiken Soldahl
-     Adobe Firefly   firefly.adobe.com     produktbilder och image ads
      Creative Loop   creative-loop.pages.dev
-     ChatGPT         chatgpt.com           deep research, kundavatar
+     ChatGPT         chatgpt.com           image ads, personbilder,
+                                           deep research, kundavatar
+     claude.ai       claude.ai             image ads-KONCEPT, projektet
+                                           "Image ads NEW products" ligger pa
+                                           kontot westrosbusiness@gmail.com
+     Adobe Firefly   firefly.adobe.com     ren produktbild UTAN person
      Gemini          gemini.google.com     best ads deep analysis
      Temu            temu.com              referensbilder pa produkten
      Google          drive.google.com      image ads laddas upp hit
+
+   ⛔ IMAGE ADS genereras i ChatGPT, INTE i Firefly (Elliot 2026-09-18).
+     Ladda upp referensbild pa produkten FORE varje koncept-prompt, annars
+     blir produkten fel. Personbilder gors ocksa i ChatGPT. Ren produktbild
+     utan person far fortfarande goras i Firefly. Se minnet
+     feedback_image_ads_genereras_i_chatgpt_inte_firefly.
 
    Ligger uppgifterna redan forifyllda i ett inloggningsformular
    klickar Claude sjalv pa Logga in. Skriva in ett losenord gor den aldrig.
@@ -223,6 +233,11 @@ sa har, och det ar redan byggt:
      nar de anvands, COGS beraknad och rabattkoder skapade UTAN godkannande, koherent styckpris,
      och G9 SLUTKONTROLL (kvalitetskoll.py mot Shopify) fore Rotche-overlamning.
      Facit = de forsta produkterna, 10 av 10. Att flagga och kora vidare ar forbjudet.
+
+     ⛔ LIVE-KRAV (2026-09-17): en produkt vars LP-lank delas med nagon MASTE vara
+     ACTIVE *och* publicerad till Webbshop + Shop. ACTIVE ensamt ger 404 i butiken.
+     Oppna alltid lanken sjalv och se att den laddar innan du sager att den ar klar.
+     ⛔ PRIS: Soldahls charmpriser slutar ALLTID pa 9 (369/559/749), aldrig pa 7.
 
   Slutkontroll G9 (runbook/05-SLUTKONTROLL.txt, tools/kvalitetskoll.py).
      Shopify ar sanningen: skriptet laser produkten och sager PASS/FAIL sa ingen
