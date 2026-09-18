@@ -158,7 +158,7 @@ STEG G - PRODUKTJAKTEN (galler ALLA maskiner, 2026-09-16): kontrollera med list_
 att den schemalagda tasken "daily-winning-product-finder" finns pa den har datorn. Saknas den: skapa
 den SJALV med create_scheduled_task (taskId daily-winning-product-finder, title "Daily winning product
 finder", cronExpression "0 4 * * *", prompt EXAKT: "Las C:\soldahl-machine\produktjakt\START.md och
-folj den."). Kor sedan en gang: powershell -ExecutionPolicy Bypass -File <REPO>	ools\jakt.ps1 start
+folj den."). Kor sedan en gang: powershell -ExecutionPolicy Bypass -File <REPO>\tools\jakt.ps1 start
 och verifiera att du har ett snitt (annars: ta den lediga raden i produktjakt\marknader.json, pusha).
 Modell/permission (Opus 4.8 Medium, Bypass) satts av Elliot i taskens editor - skriv i JAKTLOGG att
 tasken ar skapad sa han vet att den ska stallas in. Las produktjakt\PROTOKOLL.md.
@@ -274,7 +274,7 @@ produktjakt\JAKTLOGG.txt. Manniskan gor EN sak:
      behover den och skriver i JAKTLOGG vad som saknades.
 
 4.3  Kor en gang for hand for att se att maskinen har ett snitt:
-       powershell -ExecutionPolicy Bypass -File C:\soldahl-machine	ools\jakt.ps1 start
+       powershell -ExecutionPolicy Bypass -File C:\soldahl-machine\tools\jakt.ps1 start
      Star det "INGET SNITT": ta den lediga raden i marknader.json, skriv in
      maskinens id, sync.ps1 push "M5 snitt", klart.
 
