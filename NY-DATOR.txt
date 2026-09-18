@@ -9,6 +9,11 @@ samma minne, aldrig krocka med nagon, och halla sig uppdaterad SJALV.
 Det ar tre delar. Del 1 gor en manniska. Del 2 ar EN prompt till Claude.
 Del 3 ar vad som hander sedan, automatiskt.
 
+⭐ VILL DU BARA KOPIERA EN PROMPT: oppna NY-DATOR-PROMPT.txt. Dar ligger tva
+fardiga prompter att markera och klistra in i en ny chatt - en for image ads
+(STEG 7, kor kon i builds/IMAGE-ADS-KO.md) och en for hela Endgame-bygget.
+Ingen redigering behovs.
+
 Bevisat 2026-09-08 med M1 och M2: tva konton pa tva datorer samtidigt,
 inga krockar. Inte bevisat an: tre eller fler samtidigt.
 
@@ -148,6 +153,9 @@ progress, push, och nar du ramar in dina svar (borja "💻 M<id>", avsluta "💻
 Ditt id ar ALLTID exakt det som star i machine.txt (satt av setup-machine.ps1, atomart tilldelat
 sa tva datorer aldrig far samma). Hitta ALDRIG pa ett eget id, gissa aldrig, och andra det aldrig
 for hand. Star det inget id: kor setup-machine.ps1 (STEG B), lat den tilldela, las sedan om filen.
+NAMNGE DIG OCKSA: dop chatten med set_session_title till exakt "M<id> Endgame" sa fort du vet
+ditt id. Elliot kor sex datorer samtidigt och maste kunna se i sessionslistan vilken maskin
+som ar vilken - en chatt som heter nagot annat ar en chatt han inte hittar.
 
 STEG D - Las (i denna ordning, de gar fore din egen bedomning):
 <REPO>\PROTOCOL.md, <REPO>\memory\MEMORY.md, <REPO>\runbook\00-START-HAR.txt,
@@ -157,6 +165,19 @@ STEG D - Las (i denna ordning, de gar fore din egen bedomning):
 STEG E - Kor: powershell -ExecutionPolicy Bypass -File <REPO>\tools\sync.ps1 pull
 Las NYHETER som skrivs ut. Kor sedan slutkontroll-svepet (se 05-SLUTKONTROLL.txt) och
 atgarda ev. FAIL pa produkter du byggt.
+
+STEG E2 - KONTROLLERA DE TVA INLOGGNINGARNA (det har brukar ga fel och kostade ett helt
+arbetspass 2026-09-18): (1) Claude-SIDOPANELEN i Chrome maste vara inloggad pa SAMMA
+Claude-konto som den har sessionen, annars ser du ingen webblasare alls
+(list_connected_browsers ger []). (2) claude.ai-FLIKEN i samma webblasare maste vara
+westrosbusiness@gmail.com, dar koncept-projektet "Image ads NEW products" ligger
+(01a05086-a160-775f-b7e2-e0bfe20c1b27; det gamla 01a050a9... tillhor annat konto och ger
+no-permission). De tva FAR skilja sig at. Verifiera nummer 2 via https://claude.ai/api/organizations
+INNAN du genererar image ads - annars branner du en korning. Ger list_connected_browsers []:
+sag i EN mening att Elliot behover oppna sidopanelen och jobba vidare med annat - starta INTE
+om hans Chrome och grav INTE i Local State/Secure Preferences (river hans fonsterlayout, loser
+inget; se feedback_ror_inte_elliots_chrome_flikar). Maste du anda starta Chrome: kvotera
+profilen ('--profile-directory="Profile 1"'), okvoterat hamnar du i Default.
 
 STEG F - Ta nasta produkt ur Accepted Elliot (Product Finder) som ingen annan claimat.
 Claima med sync.ps1 claim <handle> (exit 2 = upptagen, ta nasta). Preflight-kolla handlen i
