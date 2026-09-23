@@ -13,324 +13,287 @@
 <style>
 
   /* ------------------------------------------------------------------
-     Maskinparken.
-
-     Sidan ar en TAVLA, inte en app. Den ska ga att lasa pa tre sekunder
-     med telefonen i handen: ar allt lugnt, vem bygger vad, hur langt har
-     de kommit. Darfor tabellrader i stallet for kort, och statusfarger
-     som betyder nagot i stallet for en dekorativ accentfarg.
-
-     Typsnitt: Familjen Grotesk for text (svenskritad grotesk med egen
-     karaktar), IBM Plex Mono for allt som ar data: maskin-id, steg,
-     klockslag. Siffror ska stapla sig i kolumn, darav tabular-nums.
+     Hjarn-sidan. En tavla for Elliot: ar allt lugnt, vem bygger vad, har
+     maskinerna last senaste misstagsregistret, och vad sa slutgranskningen.
+     Accent: Soldahl-gront #008936. Inter for text, JetBrains Mono for id,
+     tider och tal. Allt annat ar neutralt sa statusfargerna betyder nagot.
      ------------------------------------------------------------------ */
-
   :root{
     color-scheme: light dark;
+    --accent:#008936;
+    --accent-yta:#e3f3e9;
+    --accent-text:#006b2a;
 
-    /* Ytor och linjer. Neutralen dras nagot mot bla-gront sa den inte
-       laser som en obeslutsam gra. */
-    --papper:#f2f3f0;
+    --papper:#f4f5f3;
     --yta:#ffffff;
-    --yta-2:#e9ebe7;
-    --linje:#d8dbd5;
-    --linje-svag:#e7e9e4;
+    --yta-2:#eceeeb;
+    --yta-3:#e2e5e1;
+    --linje:#d6d9d4;
+    --linje-svag:#e6e8e4;
 
-    /* Text */
     --blackt:#15181b;
-    --dampat:#565d63;
-    --svagt:#868d93;
+    --dampat:#545b61;
+    --svagt:#858c92;
 
-    /* Status. Fyra tillstand, fyra farger, ingen av dem ar en varumarkes-
-       accent. Farg = betydelse, inte dekor. */
-    --bygger:#9a5600;
-    --bygger-yta:#f6ecdd;
-    --ledig:#2c6349;
-    --ledig-yta:#e2eee8;
-    --tyst:#9e2f21;
-    --tyst-yta:#f6e4e1;
-    --av:#9aa1a6;
-    --av-yta:#eaece9;
+    --gron:#1d7a3d;   --gron-yta:#e1f1e6;
+    --gul:#9a6200;    --gul-yta:#f8edd6;
+    --rod:#b3261e;    --rod-yta:#f9e3e1;
+    --gra:#7d848a;    --gra-yta:#e9ebe8;
 
-    --fokus:#15181b;
-    --skugga:0 1px 0 rgba(21,24,27,.04);
-    --radie:10px;
+    --fokus:#008936;
+    --skugga:0 1px 2px rgba(21,24,27,.05), 0 0 0 1px rgba(21,24,27,.02);
+    --radie:12px;
   }
-
-  /* Tre lagen: system utan stampel, uttryckligt morkt, uttryckligt ljust. */
   @media (prefers-color-scheme:dark){
     :root:not([data-theme="light"]){
-      --papper:#101215;
-      --yta:#171a1e;
-      --yta-2:#1e2227;
-      --linje:#262b31;
-      --linje-svag:#1f242a;
-      --blackt:#eaedef;
-      --dampat:#9ba3aa;
-      --svagt:#6d757c;
-      --bygger:#e0a04a;
-      --bygger-yta:#2a2015;
-      --ledig:#63bf93;
-      --ledig-yta:#152420;
-      --tyst:#e07a68;
-      --tyst-yta:#2a1a17;
-      --av:#5b6167;
-      --av-yta:#1d2126;
-      --fokus:#eaedef;
-      --skugga:none;
+      --accent:#1fb35b; --accent-yta:#12291b; --accent-text:#4fd280;
+      --papper:#0f1211; --yta:#171b19; --yta-2:#1e2320; --yta-3:#262c28;
+      --linje:#2a302c; --linje-svag:#222825;
+      --blackt:#eaedeb; --dampat:#a0a8a3; --svagt:#6f7772;
+      --gron:#4fd280; --gron-yta:#12291b;
+      --gul:#e6b04a; --gul-yta:#2d2414;
+      --rod:#ef7a70; --rod-yta:#2f1a18;
+      --gra:#6b7370; --gra-yta:#202623;
+      --fokus:#4fd280; --skugga:none;
     }
   }
   :root[data-theme="dark"]{
-    --papper:#101215;
-    --yta:#171a1e;
-    --yta-2:#1e2227;
-    --linje:#262b31;
-    --linje-svag:#1f242a;
-    --blackt:#eaedef;
-    --dampat:#9ba3aa;
-    --svagt:#6d757c;
-    --bygger:#e0a04a;
-    --bygger-yta:#2a2015;
-    --ledig:#63bf93;
-    --ledig-yta:#152420;
-    --tyst:#e07a68;
-    --tyst-yta:#2a1a17;
-    --av:#5b6167;
-    --av-yta:#1d2126;
-    --fokus:#eaedef;
-    --skugga:none;
+    --accent:#1fb35b; --accent-yta:#12291b; --accent-text:#4fd280;
+    --papper:#0f1211; --yta:#171b19; --yta-2:#1e2320; --yta-3:#262c28;
+    --linje:#2a302c; --linje-svag:#222825;
+    --blackt:#eaedeb; --dampat:#a0a8a3; --svagt:#6f7772;
+    --gron:#4fd280; --gron-yta:#12291b;
+    --gul:#e6b04a; --gul-yta:#2d2414;
+    --rod:#ef7a70; --rod-yta:#2f1a18;
+    --gra:#6b7370; --gra-yta:#202623;
+    --fokus:#4fd280; --skugga:none;
   }
 
   *{box-sizing:border-box}
   html,body{max-width:100%; overflow-x:clip}
-  body{
-    margin:0; background:var(--papper); color:var(--blackt);
-    font-family:"Familjen Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
-    font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
-  }
-  .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,monospace;
+  body{margin:0; background:var(--papper); color:var(--blackt);
+       font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+       font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+       font-feature-settings:"cv11","ss01"}
+  .mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,monospace;
         font-variant-numeric:tabular-nums}
+  b,strong{font-weight:600}
+  a{color:inherit}
 
-  .ram{max-width:960px; margin:0 auto;
-       padding:0 max(18px, env(safe-area-inset-right)) 0 max(18px, env(safe-area-inset-left))}
-  /* Bottenluften hor till sidans SISTA block, inte till varje ram. Satt den
-     pa alla och far huvudet ett 56 px stort hal under sig. */
+  .ram{max-width:1040px; margin:0 auto;
+       padding:0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left))}
   .ram--slut{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
-  @media (min-width:1280px){ .ram{max-width:1120px} }
+  @media (min-width:1280px){ .ram{max-width:1180px} }
 
   /* --- Huvud ------------------------------------------------------- */
-  .mast{display:flex; align-items:center; justify-content:space-between;
-        gap:16px; padding:22px 0 16px}
-  .mast__id{display:flex; align-items:center; gap:11px; min-width:0}
+  .mast{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:20px 0 14px}
+  .mast__id{display:flex; align-items:center; gap:10px; min-width:0}
   .mast__mark{flex:none; display:block}
-  .mast__namn{font-size:19px; font-weight:600; letter-spacing:-.015em; white-space:nowrap}
-  .puls{display:flex; align-items:center; gap:7px; font-size:12px;
-        color:var(--dampat); white-space:nowrap}
-  .puls__prick{width:7px; height:7px; border-radius:50%; background:var(--av)}
-  .puls.pa .puls__prick{background:var(--ledig)}
-  .puls.av .puls__prick{background:var(--tyst)}
+  .mast__namn{font-size:18px; font-weight:700; letter-spacing:-.02em; white-space:nowrap}
+  .mast__namn em{font-style:normal; color:var(--accent)}
+  .puls{display:flex; align-items:center; gap:7px; font-size:12px; color:var(--dampat); white-space:nowrap}
+  .puls__prick{width:7px; height:7px; border-radius:50%; background:var(--gra)}
+  .puls.pa .puls__prick{background:var(--gron)}
+  .puls.av .puls__prick{background:var(--rod)}
 
-  /* --- Menyn. Tre ord. Inget mer. ---------------------------------- */
+  /* --- Meny -------------------------------------------------------- */
   .meny{position:sticky; top:0; z-index:20; background:var(--papper);
-        border-bottom:1px solid var(--linje); margin-bottom:30px}
-  /* Fem ord ska fa plats pa en rad aven pa 375 px. Bryts ett ord pa tva rader
-     ser menyn trasig ut, sa hellre en rad som gar att dra i sidled. */
-  .meny__inre{max-width:960px; margin:0 auto; display:flex; gap:4px;
-              padding:0 max(18px, env(safe-area-inset-left));
+        border-bottom:1px solid var(--linje); margin-bottom:26px}
+  .meny__inre{max-width:1040px; margin:0 auto; display:flex; gap:2px;
+              padding:0 max(16px, env(safe-area-inset-left));
               overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch}
   .meny__inre::-webkit-scrollbar{display:none}
-  @media (min-width:1280px){ .meny__inre{max-width:1120px} }
-  .meny a{
-    flex:1 0 auto; text-align:center; text-decoration:none; color:var(--dampat);
-    font-size:14px; font-weight:500; letter-spacing:.01em; white-space:nowrap;
-    padding:13px 8px 11px; border-bottom:2px solid transparent;
-    margin-bottom:-1px; min-height:44px; display:flex; align-items:center;
-    justify-content:center;
-  }
-  @media (min-width:640px){ .meny a{flex:0 0 auto; text-align:left; padding-inline:2px; margin-right:26px} }
-  .meny a.har{color:var(--blackt); border-bottom-color:var(--blackt)}
+  @media (min-width:1280px){ .meny__inre{max-width:1180px} }
+  .meny a{flex:0 0 auto; text-decoration:none; color:var(--dampat); font-size:13.5px; font-weight:500;
+          white-space:nowrap; padding:12px 10px 10px; border-bottom:2px solid transparent;
+          margin-bottom:-1px; min-height:44px; display:flex; align-items:center}
+  .meny a.har{color:var(--blackt); border-bottom-color:var(--accent)}
   .meny a:focus-visible{outline:2px solid var(--fokus); outline-offset:-2px}
 
   /* --- Sektioner --------------------------------------------------- */
-  section{scroll-margin-top:64px; margin-bottom:38px}
-  .rubrik{display:flex; align-items:baseline; justify-content:space-between;
-          gap:12px; margin:0 0 14px}
-  .rubrik h2{margin:0; font-size:13px; font-weight:600; letter-spacing:.14em;
-             text-transform:uppercase; color:var(--svagt)}
+  section{scroll-margin-top:60px; margin-bottom:40px}
+  .rubrik{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin:0 0 12px; flex-wrap:wrap}
+  .rubrik h2{margin:0; font-size:12.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--svagt)}
   .rubrik .rakning{font-size:12px; color:var(--svagt)}
+  .ingress{margin:-4px 0 14px; font-size:13.5px; color:var(--dampat); max-width:70ch}
+  .ingress code, code.k{font-family:"JetBrains Mono",monospace; font-size:12px; background:var(--yta-2); padding:1px 5px; border-radius:4px}
+  .kort{background:var(--yta); border:1px solid var(--linje); border-radius:var(--radie); box-shadow:var(--skugga); overflow:hidden}
+  .tomt{padding:18px; color:var(--svagt); font-size:14px}
 
-  /* --- Laget ------------------------------------------------------- */
-  .laget{background:var(--yta); border:1px solid var(--linje);
-         border-radius:var(--radie); box-shadow:var(--skugga); overflow:hidden}
-  .laget__dom{display:flex; gap:14px; align-items:flex-start; padding:20px 20px 18px}
-  .laget__flagga{width:4px; align-self:stretch; border-radius:2px; background:var(--ledig); flex:none}
-  .laget.varning .laget__flagga{background:var(--tyst)}
-  .laget.arbete .laget__flagga{background:var(--bygger)}
-  .laget__text strong{display:block; font-size:22px; font-weight:600;
-                      letter-spacing:-.02em; line-height:1.25; text-wrap:balance}
-  .laget__text span{display:block; margin-top:3px; color:var(--dampat); font-size:14.5px}
+  /* --- Etiketter --------------------------------------------------- */
+  .tag{display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600; letter-spacing:.06em;
+       text-transform:uppercase; padding:3px 8px; border-radius:20px; white-space:nowrap; line-height:1.4}
+  .tag::before{content:""; width:6px; height:6px; border-radius:50%; background:currentColor}
+  .tag.gron{color:var(--gron); background:var(--gron-yta)}
+  .tag.gul{color:var(--gul); background:var(--gul-yta)}
+  .tag.rod{color:var(--rod); background:var(--rod-yta)}
+  .tag.gra{color:var(--gra); background:var(--gra-yta)}
+  .tag.accent{color:var(--accent-text); background:var(--accent-yta)}
+  .tag.ren::before{display:none}
+  .chip{display:inline-block; font-family:"JetBrains Mono",monospace; font-size:11.5px; padding:1px 6px;
+        border-radius:5px; background:var(--yta-2); color:var(--dampat); margin:1px 2px 1px 0}
+  .chip.rod{background:var(--rod-yta); color:var(--rod)}
+  .chip.gul{background:var(--gul-yta); color:var(--gul)}
 
-  .takt{border-top:1px solid var(--linje-svag); padding:16px 20px 18px}
-  .takt__rad{display:flex; align-items:baseline; justify-content:space-between;
-             gap:12px; margin-bottom:9px}
-  .takt__tal{font-size:15px; color:var(--dampat)}
-  .takt__tal b{font-size:26px; font-weight:600; letter-spacing:-.03em; color:var(--blackt)}
-  .takt__mal{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--svagt)}
-  .takt__spar{height:6px; border-radius:3px; background:var(--yta-2); overflow:hidden}
-  .takt__spar i{display:block; height:100%; background:var(--blackt); border-radius:3px; min-width:3px}
+  /* --- Laget: nyckeltal --------------------------------------------- */
+  .nyckel{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px}
+  @media (min-width:640px){ .nyckel{grid-template-columns:repeat(3, minmax(0,1fr))} }
+  @media (min-width:960px){ .nyckel{grid-template-columns:repeat(6, minmax(0,1fr))} }
+  .tal{background:var(--yta); border:1px solid var(--linje); border-radius:var(--radie); box-shadow:var(--skugga);
+       padding:14px 14px 12px; display:flex; flex-direction:column; gap:4px; min-height:96px; position:relative; overflow:hidden}
+  .tal::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--gra)}
+  .tal.gron::before{background:var(--gron)} .tal.gul::before{background:var(--gul)}
+  .tal.rod::before{background:var(--rod)} .tal.accent::before{background:var(--accent)}
+  .tal__etikett{font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--svagt)}
+  .tal__varde{font-size:28px; font-weight:600; letter-spacing:-.03em; line-height:1.1; font-variant-numeric:tabular-nums}
+  .tal__varde small{font-size:14px; font-weight:500; color:var(--dampat); letter-spacing:0}
+  .tal__under{font-size:12px; color:var(--dampat); margin-top:auto}
+  .tal__spar{height:4px; border-radius:2px; background:var(--yta-2); overflow:hidden; margin-top:6px}
+  .tal__spar i{display:block; height:100%; background:var(--accent); border-radius:2px; min-width:2px}
+  .dom{margin-top:10px; display:flex; gap:12px; align-items:flex-start; padding:14px 16px}
+  .dom__flagga{width:4px; align-self:stretch; border-radius:2px; background:var(--gron); flex:none}
+  .dom.varning .dom__flagga{background:var(--rod)}
+  .dom.arbete .dom__flagga{background:var(--accent)}
+  .dom strong{display:block; font-size:18px; font-weight:600; letter-spacing:-.02em; line-height:1.3}
+  .dom span{display:block; margin-top:2px; color:var(--dampat); font-size:13.5px}
 
-  /* --- Maskintavlan ------------------------------------------------
-     Pa dator en riktig tabell med kolumnrubriker, for att ogat ska kunna
-     lasa nedat i en kolumn. Pa telefon staplas varje maskin i stallet,
-     for en femkolumnstabell pa 375 px blir oläslig. */
-  .tavla{background:var(--yta); border:1px solid var(--linje);
-         border-radius:var(--radie); box-shadow:var(--skugga); overflow:hidden}
-  .tavla__huvud{display:none}
-  .rad{display:grid; gap:3px 16px; padding:15px 18px;
-       border-bottom:1px solid var(--linje-svag);
-       grid-template-columns:auto 1fr auto; align-items:baseline}
-  .rad:last-child{border-bottom:0}
+  /* --- Maskinkort --------------------------------------------------- */
+  .maskiner{display:grid; grid-template-columns:1fr; gap:12px}
+  @media (min-width:700px){ .maskiner{grid-template-columns:repeat(2, minmax(0,1fr))} }
+  @media (min-width:1100px){ .maskiner{grid-template-columns:repeat(3, minmax(0,1fr))} }
+  .mk{background:var(--yta); border:1px solid var(--linje); border-radius:var(--radie); box-shadow:var(--skugga);
+      padding:14px 16px 12px; display:flex; flex-direction:column; gap:10px; min-width:0}
+  .mk__topp{display:flex; align-items:center; justify-content:space-between; gap:10px}
+  .mk__id{display:flex; align-items:baseline; gap:8px; min-width:0}
+  .mk__id b{font-family:"JetBrains Mono",monospace; font-size:15px; font-weight:600}
+  .mk__id span{font-size:13px; color:var(--dampat); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .mk__id small{font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--svagt)}
+  .mk__uppdrag{font-size:15.5px; font-weight:600; letter-spacing:-.01em; overflow-wrap:anywhere; line-height:1.3}
+  .mk__uppdrag.tom{font-weight:400; color:var(--svagt)}
+  .mk__stegrad{display:flex; align-items:baseline; gap:8px; font-size:12.5px; color:var(--dampat); flex-wrap:wrap; margin-top:4px}
+  .mk__stegrad b{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--blackt)}
+  .stapel{display:flex; gap:2px; margin-top:6px}
+  .stapel i{flex:1 1 0; height:4px; border-radius:1px; background:var(--yta-2); min-width:0}
+  .stapel i.klar{background:var(--accent); opacity:.4}
+  .stapel i.nu{background:var(--accent)}
+  .mk__note{font-size:12.5px; color:var(--dampat); line-height:1.45; overflow-wrap:anywhere;
+            display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden}
+  .mk__rader{display:grid; grid-template-columns:auto 1fr; gap:6px 10px; font-size:12.5px; align-items:center;
+             border-top:1px solid var(--linje-svag); padding-top:10px}
+  .mk__rader dt{margin:0; color:var(--svagt); font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase}
+  .mk__rader dd{margin:0; min-width:0; overflow-wrap:anywhere; display:flex; align-items:center; gap:6px; flex-wrap:wrap}
+  .mk__commits{border-top:1px solid var(--linje-svag); padding-top:8px; margin:0; list-style:none}
+  .mk__commits li{display:grid; grid-template-columns:auto 1fr; gap:8px; font-size:12px; color:var(--dampat); line-height:1.4; padding:2px 0}
+  .mk__commits li span:first-child{font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--svagt); white-space:nowrap}
+  .mk__commits li span:last-child{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .mk__krock{font-size:12.5px; font-weight:500; color:var(--rod); background:var(--rod-yta); border-radius:7px; padding:7px 10px}
 
-  .rad__id{font-size:13px; font-weight:600; letter-spacing:.02em; color:var(--blackt)}
-  .rad__namn{font-size:13px; color:var(--svagt); overflow-wrap:anywhere}
-  .rad__lage{grid-column:3; justify-self:end; font-size:11.5px; font-weight:600;
-             letter-spacing:.07em; text-transform:uppercase; white-space:nowrap;
-             padding:3px 8px; border-radius:20px}
-  .rad__lage[data-lage="bygger"]{color:var(--bygger); background:var(--bygger-yta)}
-  .rad__lage[data-lage="ledig"] {color:var(--ledig);  background:var(--ledig-yta)}
-  .rad__lage[data-lage="tyst"]  {color:var(--tyst);   background:var(--tyst-yta)}
-  .rad__lage[data-lage="av"]    {color:var(--av);     background:var(--av-yta)}
-
-  .rad__uppdrag{grid-column:1 / -1; margin-top:7px; font-size:16px;
-                font-weight:500; letter-spacing:-.01em; overflow-wrap:anywhere}
-  .rad__uppdrag.tom{font-weight:400; color:var(--svagt)}
-  .rad__steg{grid-column:1 / -1; margin-top:8px}
-  .rad__stegrad{display:flex; align-items:baseline; gap:9px; margin-bottom:6px;
-                font-size:13px; color:var(--dampat); flex-wrap:wrap}
-  .rad__stegnr{font-size:12px; font-weight:600; color:var(--blackt)}
-  .stapel{display:flex; gap:2px}
-  .stapel i{flex:1 1 0; height:5px; border-radius:1px; background:var(--yta-2); min-width:0}
-  .stapel i.klar{background:var(--bygger); opacity:.42}
-  .stapel i.nu{background:var(--bygger)}
-  .rad__senast{grid-column:1 / -1; margin-top:9px; font-size:12px; color:var(--svagt)}
-  .rad__krock{grid-column:1 / -1; margin-top:9px; font-size:13px; font-weight:500;
-              color:var(--tyst); background:var(--tyst-yta);
-              border-radius:7px; padding:8px 10px; overflow-wrap:anywhere}
-
-  @media (min-width:760px){
-    .tavla__huvud, .rad{
-      display:grid;
-      grid-template-columns:52px minmax(96px,.7fr) minmax(0,1.5fr) minmax(150px,1.1fr) 86px;
-      gap:0 18px; align-items:center;
-    }
-    .tavla__huvud{padding:11px 20px; border-bottom:1px solid var(--linje);
-                  background:var(--yta-2)}
-    .tavla__huvud span{font-size:10.5px; font-weight:600; letter-spacing:.12em;
-                       text-transform:uppercase; color:var(--svagt)}
-    .tavla__huvud span:last-child{text-align:right}
-    .rad{padding:16px 20px}
-    .rad__id{grid-column:1; font-size:14px}
-    .rad__namn{grid-column:2; font-size:13.5px; color:var(--dampat)}
-    .rad__uppdrag{grid-column:3; margin-top:0}
-    .rad__steg{grid-column:4; margin-top:0}
-    .rad__stegrad{margin-bottom:5px; font-size:12.5px}
-    .rad__lage{grid-column:5; justify-self:end}
-    .rad__senast{grid-column:3 / -1; margin-top:6px; text-align:right}
-    .rad__krock{grid-column:1 / -1; margin-top:10px}
-  }
-
-  /* --- Steglegenden ------------------------------------------------ */
-  .legend{margin-top:14px; background:var(--yta); border:1px solid var(--linje);
-          border-radius:var(--radie); overflow:hidden}
-  .legend > summary{
-    list-style:none; cursor:pointer; padding:14px 18px; min-height:44px;
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    font-size:14px; font-weight:500; color:var(--dampat);
-  }
+  .legend{margin-top:12px}
+  .legend > summary{list-style:none; cursor:pointer; padding:12px 16px; min-height:44px; display:flex; align-items:center;
+                    justify-content:space-between; gap:10px; font-size:13.5px; font-weight:500; color:var(--dampat)}
   .legend > summary::-webkit-details-marker{display:none}
-  .legend > summary::after{content:"+"; font-family:"IBM Plex Mono",monospace;
-                           font-size:16px; color:var(--svagt)}
-  .legend[open] > summary::after{content:"–"}
-  .legend > summary:focus-visible{outline:2px solid var(--fokus); outline-offset:-2px}
-  .legend__lista{margin:0; padding:0 18px 16px; border-top:1px solid var(--linje-svag);
-                 padding-top:14px; list-style:none;
-                 display:grid; grid-template-columns:1fr; gap:7px}
-  @media (min-width:700px){ .legend__lista{grid-template-columns:1fr 1fr; gap:8px 26px} }
-  .legend__lista li{display:flex; gap:11px; font-size:14px; color:var(--dampat)}
-  .legend__lista b{flex:none; width:22px; font-family:"IBM Plex Mono",monospace;
-                   font-size:12.5px; font-weight:600; color:var(--svagt)}
+  .legend > summary::after{content:"+"; font-family:"JetBrains Mono",monospace; font-size:16px; color:var(--svagt)}
+  .legend[open] > summary::after{content:"-"}
+  .legend__lista{margin:0; padding:12px 16px 14px; border-top:1px solid var(--linje-svag); list-style:none;
+                 display:grid; grid-template-columns:1fr; gap:6px}
+  @media (min-width:700px){ .legend__lista{grid-template-columns:1fr 1fr; gap:6px 26px} }
+  .legend__lista li{display:flex; gap:10px; font-size:13.5px; color:var(--dampat)}
+  .legend__lista b{flex:none; width:20px; font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--svagt)}
 
-  /* --- Nyheter ----------------------------------------------------- */
-  .ingress{margin:-6px 0 14px; font-size:14px; color:var(--dampat); max-width:62ch}
-  .ingress code{font-family:"IBM Plex Mono",monospace; font-size:12.5px;
-                background:var(--yta-2); padding:1px 5px; border-radius:4px}
-  .nyheter{background:var(--yta); border:1px solid var(--linje);
-           border-radius:var(--radie); box-shadow:var(--skugga); overflow:hidden}
-  .nyhet{padding:15px 18px; border-bottom:1px solid var(--linje-svag)}
-  .nyhet:last-child{border-bottom:0}
-  .nyhet__rad{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
-  .nyhet__datum{font-size:12px; color:var(--svagt); flex:none}
-  .nyhet__rubrik{font-size:15.5px; font-weight:600; letter-spacing:-.01em; overflow-wrap:anywhere}
-  .nyhet__text{margin:6px 0 0; font-size:14px; line-height:1.5; color:var(--dampat);
-               white-space:pre-wrap; overflow-wrap:anywhere; max-width:72ch}
+  /* --- Tabeller (stacklas pa mobil) --------------------------------- */
+  .tabell{width:100%; border-collapse:collapse; font-size:13.5px}
+  .tabell th{font-size:10.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--svagt);
+             text-align:left; padding:10px 12px; background:var(--yta-2); border-bottom:1px solid var(--linje)}
+  .tabell td{padding:10px 12px; border-bottom:1px solid var(--linje-svag); vertical-align:top; overflow-wrap:anywhere}
+  .tabell tr:last-child td{border-bottom:0}
+  .tabell tr.idag td{background:var(--accent-yta)}
+  .tabell td.id{font-family:"JetBrains Mono",monospace; font-weight:600; white-space:nowrap}
+  .tabell td.dim{color:var(--dampat)}
+  .tabell td.nowrap{white-space:nowrap}
+  @media (max-width:759px){
+    .tabell thead{display:none}
+    .tabell, .tabell tbody, .tabell tr, .tabell td{display:block}
+    .tabell tr{padding:10px 14px; border-bottom:1px solid var(--linje-svag)}
+    .tabell tr:last-child{border-bottom:0}
+    .tabell td{padding:3px 0; border:0}
+    .tabell td[data-l]::before{content:attr(data-l); display:block; font-size:10.5px; font-weight:600;
+                               letter-spacing:.1em; text-transform:uppercase; color:var(--svagt); margin-top:4px}
+    .tabell td.id{font-size:15px; padding-bottom:4px}
+  }
+  .tabell-rulle{overflow-x:auto}
 
-  /* --- Loggen ------------------------------------------------------ */
-  .logg{background:var(--yta); border:1px solid var(--linje);
-        border-radius:var(--radie); box-shadow:var(--skugga); overflow:hidden}
-  .post{display:grid; grid-template-columns:auto 1fr; gap:4px 13px;
-        padding:14px 18px; border-bottom:1px solid var(--linje-svag)}
+  /* --- Slutgranskningar ----------------------------------------------- */
+  .sg__rapport{display:none; background:var(--yta-2); padding:12px 14px; border-radius:8px; margin:6px 0 4px}
+  .sg__rapport pre{margin:0; white-space:pre-wrap; overflow-wrap:anywhere; font-size:12px; line-height:1.5; max-height:480px; overflow:auto}
+  .sg__rapport.visa{display:block}
+  .knapp-l{font:inherit; font-size:12.5px; font-weight:600; color:var(--accent-text); background:var(--accent-yta);
+           border:0; border-radius:7px; padding:6px 10px; cursor:pointer; min-height:32px}
+  .knapp-l:focus-visible{outline:2px solid var(--fokus); outline-offset:2px}
+  .counts{display:flex; gap:10px; flex-wrap:wrap; font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--dampat)}
+  .counts b{color:var(--blackt); font-weight:600}
+
+  /* --- Misstagsregistret --------------------------------------------- */
+  .reg__verktyg{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:12px}
+  .reg__sok{flex:1 1 220px; font:inherit; font-size:14px; padding:10px 12px; border:1px solid var(--linje); border-radius:9px;
+            background:var(--yta); color:var(--blackt); min-height:44px}
+  .reg__sok:focus-visible{outline:2px solid var(--fokus); outline-offset:1px; border-color:var(--fokus)}
+  .reg__filter{display:flex; gap:6px; flex-wrap:wrap}
+  .reg__filter button{font:inherit; font-size:12.5px; font-weight:500; padding:7px 11px; min-height:36px; border-radius:20px;
+                      border:1px solid var(--linje); background:var(--yta); color:var(--dampat); cursor:pointer}
+  .reg__filter button.pa{background:var(--blackt); color:var(--papper); border-color:var(--blackt)}
+  .reg__filter button:focus-visible{outline:2px solid var(--fokus); outline-offset:2px}
+  .reg__kat{margin-bottom:14px}
+  .reg__kat h3{margin:0; padding:11px 14px; font-size:13px; font-weight:600; letter-spacing:.04em; display:flex; align-items:center;
+               justify-content:space-between; gap:10px; border-bottom:1px solid var(--linje)}
+  .reg__kat h3 span{font-size:11.5px; font-weight:500; color:var(--svagt)}
+  .reg__lasare{display:flex; gap:6px; flex-wrap:wrap; align-items:center; font-size:12.5px; color:var(--dampat)}
+  .reg__auto{font-family:"JetBrains Mono",monospace; font-size:11.5px}
+
+  /* --- Listor: bottlenecks, feedback, nyheter -------------------------- */
+  .post{padding:13px 16px; border-bottom:1px solid var(--linje-svag)}
   .post:last-child{border-bottom:0}
-  .post__vem{font-size:11.5px; font-weight:600; letter-spacing:.04em; color:var(--svagt);
-             padding-top:2px}
-  .post__text{font-size:15px; line-height:1.45; overflow-wrap:anywhere}
-  .post__nar{grid-column:2; font-size:12px; color:var(--svagt)}
-  @media (min-width:760px){ .logg__rulle{max-height:min(560px, calc(100vh - 220px));
-                                         overflow-y:auto; overscroll-behavior:contain} }
+  .post__rad{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+  .post__meta{font-family:"JetBrains Mono",monospace; font-size:11.5px; color:var(--svagt); white-space:nowrap}
+  .post__rubrik{font-size:14.5px; font-weight:600; letter-spacing:-.01em; overflow-wrap:anywhere; flex:1 1 200px}
+  .post__text{margin:6px 0 0; font-size:13.5px; line-height:1.5; color:var(--dampat); white-space:pre-wrap; overflow-wrap:anywhere; max-width:80ch}
+  .post__text.klipp{display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; white-space:normal}
+  .post__mer{font:inherit; font-size:12px; color:var(--accent-text); background:none; border:0; padding:4px 0; cursor:pointer; font-weight:600}
+  .post.oppen{border-left:3px solid var(--gul)}
 
-  .tomt{padding:18px; color:var(--svagt); font-size:14.5px}
+  .logg .post{display:grid; grid-template-columns:auto 1fr; gap:3px 12px}
+  .logg .post__vem{font-family:"JetBrains Mono",monospace; font-size:11.5px; font-weight:600; color:var(--svagt); padding-top:2px}
+  .logg .post__t{font-size:14px; line-height:1.45; overflow-wrap:anywhere}
+  .logg .post__nar{grid-column:2; font-family:"JetBrains Mono",monospace; font-size:11.5px; color:var(--svagt)}
+  @media (min-width:760px){ .logg__rulle{max-height:min(560px, calc(100vh - 220px)); overflow-y:auto; overscroll-behavior:contain} }
 
-  /* --- Notiser ----------------------------------------------------- */
-  .notis{display:none; align-items:center; gap:13px; flex-wrap:wrap;
-         background:var(--yta); border:1px solid var(--blackt);
-         border-radius:var(--radie); padding:14px 16px; margin-bottom:24px}
-  .notis p{margin:0; font-size:14.5px; flex:1 1 200px; min-width:0}
-  .knapp{font:inherit; font-size:14px; font-weight:600; border:1px solid var(--blackt);
-         background:var(--blackt); color:var(--papper); border-radius:8px;
+  .notis{display:none; align-items:center; gap:13px; flex-wrap:wrap; background:var(--yta); border:1px solid var(--accent);
+         border-radius:var(--radie); padding:12px 16px; margin-bottom:22px}
+  .notis p{margin:0; font-size:14px; flex:1 1 200px}
+  .knapp{font:inherit; font-size:14px; font-weight:600; border:0; background:var(--accent); color:#fff; border-radius:9px;
          padding:11px 17px; min-height:44px; cursor:pointer}
   .knapp:focus-visible{outline:2px solid var(--fokus); outline-offset:2px}
-  #installera{display:block; margin-bottom:24px}
-  .tips{margin:0 0 24px; font-size:14px; color:var(--dampat); background:var(--yta);
-        border:1px solid var(--linje); border-radius:var(--radie); padding:13px 15px}
-  .tips b{color:var(--blackt); font-weight:600}
-
-  footer{margin-top:34px; padding-top:20px; border-top:1px solid var(--linje);
-         color:var(--svagt); font-size:13.5px; line-height:1.6}
+  #installera{display:block; margin-bottom:22px}
+  .tips{margin:0 0 22px; font-size:13.5px; color:var(--dampat); background:var(--yta); border:1px solid var(--linje); border-radius:var(--radie); padding:12px 15px}
+  .tips b{color:var(--blackt)}
+  footer{margin-top:30px; padding-top:18px; border-top:1px solid var(--linje); color:var(--svagt); font-size:13px; line-height:1.6}
   footer p{margin:0 0 8px} footer p:last-child{margin-bottom:0}
-  footer code{font-family:"IBM Plex Mono",monospace; font-size:12.5px;
-              background:var(--yta-2); padding:1px 5px; border-radius:4px}
+  footer code{font-family:"JetBrains Mono",monospace; font-size:12px; background:var(--yta-2); padding:1px 5px; border-radius:4px}
 
   @media (prefers-reduced-motion:no-preference){
-    .rad__lage[data-lage="bygger"]{animation:andas 3.6s ease-in-out infinite}
-    @keyframes andas{0%,100%{opacity:1} 50%{opacity:.62}}
+    .tag.pulsar{animation:andas 3.4s ease-in-out infinite}
+    @keyframes andas{0%,100%{opacity:1} 50%{opacity:.6}}
   }
 
-  /* --- Losenordslas ------------------------------------------------ */
-  /* :not([hidden]) sa hidden-attributet faktiskt goms overlagget. Utan det
-     overkorde .las{display:flex} hidden och laset lag alltid kvar ovanpa sidan. */
-  .las:not([hidden]){position:fixed; inset:0; z-index:100; background:var(--papper);
-       display:flex; align-items:center; justify-content:center; padding:24px}
+  /* --- Losenordslas (extra lager, normalt av bakom Cloudflare Access) --- */
+  .las:not([hidden]){position:fixed; inset:0; z-index:100; background:var(--papper); display:flex; align-items:center; justify-content:center; padding:24px}
   .las__kort{width:100%; max-width:360px; text-align:center}
   .las__mark{margin:0 auto 20px; display:block}
   .las h1{margin:0 0 6px; font-size:20px; font-weight:600; letter-spacing:-.02em}
   .las p{margin:0 0 20px; font-size:14px; color:var(--dampat)}
   .las form{display:flex; flex-direction:column; gap:10px}
-  .las input{font:inherit; font-size:16px; text-align:center; letter-spacing:.02em;
-             padding:13px 14px; border:1px solid var(--linje); border-radius:10px;
-             background:var(--yta); color:var(--blackt); min-height:48px}
-  .las input:focus-visible{outline:2px solid var(--fokus); outline-offset:1px; border-color:var(--fokus)}
-  .las button{font:inherit; font-size:15px; font-weight:600; border:0; border-radius:10px;
-              background:var(--blackt); color:var(--papper); padding:13px; min-height:48px; cursor:pointer}
-  .las__fel{min-height:18px; font-size:13px; color:var(--tyst); font-weight:500}
+  .las input{font:inherit; font-size:16px; text-align:center; padding:13px 14px; border:1px solid var(--linje); border-radius:10px; background:var(--yta); color:var(--blackt); min-height:48px}
+  .las button{font:inherit; font-size:15px; font-weight:600; border:0; border-radius:10px; background:var(--accent); color:#fff; padding:13px; min-height:48px; cursor:pointer}
+  .las__fel{min-height:18px; font-size:13px; color:var(--rod); font-weight:500}
 
 
   /* --- Bara for den har sidan ------------------------------------- */
