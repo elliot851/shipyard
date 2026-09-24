@@ -1,0 +1,365 @@
+=====================================================================
+ STARTA SKILLEN PA EN NY DATOR / ETT NYTT CLAUDE CODE-KONTO
+ Steg for steg, med de exakta prompterna. Uppdaterad 2026-09-18.
+=====================================================================
+
+Malet: den nya datorn ska kora EXAKT samma skill som de andra, dela
+samma minne, aldrig krocka med nagon, och halla sig uppdaterad SJALV.
+
+Det ar tre delar. Del 1 gor en manniska. Del 2 ar EN prompt till Claude.
+Del 3 ar vad som hander sedan, automatiskt.
+
+⭐ VILL DU BARA KOPIERA EN PROMPT: oppna NY-DATOR-PROMPT.txt. Dar ligger tva
+fardiga prompter att markera och klistra in i en ny chatt - en for image ads
+(STEG 7, kor kon i builds/IMAGE-ADS-KO.md) och en for hela Endgame-bygget.
+Ingen redigering behovs.
+
+Bevisat 2026-09-08 med M1 och M2: tva konton pa tva datorer samtidigt,
+inga krockar. Inte bevisat an: tre eller fler samtidigt.
+
+
+=====================================================================
+ DEL 1. MANNISKAN: FEM MINUTER VID DEN NYA DATORN
+=====================================================================
+
+1.1  Det har maste finnas forst
+
+   - Ett EGET Claude-konto. Detta ar hela poangen. Delar tva datorer
+     samma konto delar de samma vecko- och 5-timmarstak, och ni far
+     ingen extra kapacitet alls.
+   - Git            git-scm.com
+   - Python         python.org
+   - Claude Code
+   - Kopplingar i det nya Claude-kontot:
+        Shopify         obligatorisk, utan den kan inget byggas
+        Google Drive    behovs i STEG 7 (image ads)
+        Chrome-tillagget "Claude in Chrome"   Firefly och Creative Loop
+
+1.1b LOGGA IN EN GANG i webblasaren, i den Chrome-profil dar tillagget
+     "Claude in Chrome" ar installerat. Claude kan inte logga in sjalv,
+     men nar sessionerna ligger kvar i profilen anvander den dem.
+
+   ⛔ Chrome-tillagget MASTE sitta pa SAMMA dator som Claude Code kor pa.
+     Sitter det pa en annan dator hamnar allt Claude laddar ner (bilder,
+     videor, rapporter) pa fel dator, och bygget stannar. M2 fastnade
+     precis sa 2026-09-09: Claude Code pa GNUGGDATORN2, tillagget pa en
+     annan maskin. Kolla i Claude Code att den anslutna webblasaren har
+     samma datornamn som "hello" skrev ut.
+
+   Det har ar tjansterna ett produktbygge faktiskt anvander:
+
+     GitHub          github.com            elliot851, for klonen i 1.3
+     Shopify-admin   admin.shopify.com     butiken Soldahl
+     Creative Loop   creative-loop.pages.dev
+     ChatGPT         chatgpt.com           image ads, personbilder,
+                                           deep research, kundavatar
+     claude.ai       claude.ai             image ads-KONCEPT, projektet
+                                           "Image ads NEW products" ligger pa
+                                           kontot westrosbusiness@gmail.com
+     Adobe Firefly   firefly.adobe.com     ren produktbild UTAN person
+     Gemini          gemini.google.com     best ads deep analysis
+     Temu            temu.com              referensbilder pa produkten
+     Google          drive.google.com      image ads laddas upp hit
+
+   ⛔ IMAGE ADS genereras i ChatGPT, INTE i Firefly (Elliot 2026-09-18).
+     Ladda upp referensbild pa produkten FORE varje koncept-prompt, annars
+     blir produkten fel. Personbilder gors ocksa i ChatGPT. Ren produktbild
+     utan person far fortfarande goras i Firefly. Se minnet
+     feedback_image_ads_genereras_i_chatgpt_inte_firefly.
+
+   Ligger uppgifterna redan forifyllda i ett inloggningsformular
+   klickar Claude sjalv pa Logga in. Skriva in ett losenord gor den aldrig.
+
+1.2  Starta Claude Code EN gang, stang sedan
+
+   Oppna Claude Code i mappen
+      C:\Users\<du>\Downloads\Claude CODE
+   (skapa mappen om den inte finns). Stang Claude Code igen.
+
+   Detta MASTE goras fore 1.3. Claude skapar sin egen projektmapp vid
+   forsta starten, och scriptet i 1.3 behover den for att koppla ihop
+   minnet med det delade repot. Hoppar du over det stannar scriptet
+   och sager exakt vad som saknas.
+
+1.3  Fyra kommandon i PowerShell
+
+   git clone https://github.com/elliot851/soldahl-machine.git C:\soldahl-machine
+   cd C:\soldahl-machine
+   powershell -ExecutionPolicy Bypass -File tools\setup-machine.ps1
+   powershell -ExecutionPolicy Bypass -File tools\sync.ps1 hello
+
+   Forsta gangen oppnas ett GitHub-inloggningsfonster. Logga in som
+   elliot851. Repot ar privat.
+
+   ⭐ INGET id behover valjas langre. setup-machine.ps1 tilldelar nasta
+   LEDIGA maskin-id automatiskt och ATOMART (assign-machine-id.ps1, samma
+   git-race-skydd som produkt-claims), skriver det till machine.txt och
+   skriver ut det ("Tilldelat maskin-id: M5"). Startar du skillen pa tre
+   datorer samtidigt far de M5, M6, M7 - aldrig samma. Vill du ateranvanda
+   ett specifikt id (t.ex. en dator som byggts om) kan du lagga till
+   -MachineId M3, men normalt utelamnar du det.
+
+   "hello" skriver ut datornamnet och anmaler maskinen. Datornamnet ska
+   skilja sig fran de andra maskinernas. Ar det samma namn kor tva
+   kloner pa SAMMA dator, och da ar det ingen ny maskin.
+
+1.4  Ge datorn ett namn pa oversiktssidan (valfritt, gors fran vilken
+     maskin som helst)
+
+   Oppna site\maskinnamn.json och fyll i namnet for det nya id:t.
+   Sedan:  powershell -File tools\sync.ps1 push "M3 namngiven"
+
+Det ar allt manniskan gor.
+
+
+=====================================================================
+ DEL 2. PROMPTEN: EN ENDA, KLISTRA IN SOM FORSTA MEDDELANDE
+=====================================================================
+
+Starta Claude Code (helst i mappen C:\Users\<du>\Downloads\Claude CODE) och
+klistra in EXAKT det har. Prompten ar UNIVERSELL och SJALV-BOOTSTRAPPANDE: samma
+text funkar pa vilken dator som helst, inget id ska bytas, och den funkar aven om
+repot inte ligger dar an - da klonar maskinen det sjalv. Den ska ALDRIG fraga dig
+"hur vill du ga vidare".
+
+- - - - - - - - - - klipp har - - - - - - - - - -
+Du ar en maskin i Soldahls maskinpark och jobbar HELT sjalvstandigt. FRAGA MIG
+ALDRIG hur du ska ga vidare eller ge mig alternativ att valja mellan - saknas nagot
+sa fixar du det sjalv enligt stegen nedan. Det finns alltid exakt ETT jobb: ta nasta
+produkt ur Accepted Elliot och bygg den fardigt. Ge dig aldrig pa "nagot annat" jobb.
+
+STEG A - HITTA ELLER KLONA REPOT (fraga inte, gor det):
+Det delade repot ska ligga i C:\soldahl-machine. Kontrollera i denna ordning:
+  1. Finns C:\soldahl-machine\PROTOCOL.md -> anvand C:\soldahl-machine.
+  2. Annars, finns en klon nagon annanstans (sok efter en mapp "soldahl-machine" med
+     PROTOCOL.md, t.ex. under din anvandarmapp eller en OneDrive-omdirigerad Downloads/
+     Documents) -> anvand DEN sokvagen i alla kommandon nedan i stallet for C:\soldahl-machine.
+  3. Finns ingen klon alls -> klona den nu (fraga inte):
+        git clone https://github.com/elliot851/soldahl-machine.git C:\soldahl-machine
+     Oppnas ett GitHub-inloggningsfonster: logga in som elliot851 (repot ar privat).
+Anvand den funna sokvagen (kalla den REPO) genomgaende nedan.
+
+STEG B - SATT UPP MASKINEN om det inte redan ar gjort:
+Finns INTE <REPO>\machine.txt, kor:
+     powershell -ExecutionPolicy Bypass -File <REPO>\tools\setup-machine.ps1
+Det tilldelar nasta lediga maskin-id automatiskt, lankar minne/facit/runbook/skills och
+kopplar in facit-hooken. Sager scriptet "Hittar inte projektkatalogen": starta Claude Code
+EN gang i C:\Users\<du>\Downloads\Claude CODE, stang, kor scriptet igen. Starta sedan om
+Claude Code sa hooken laddas. (Utan Shopify-koppling i kontot kan bygget inte goras - saknas
+den, sag det rakt ut i en mening och fortsatt med det du kan; be mig fixa kopplingen.)
+
+STEG C - Las ditt maskin-id ur <REPO>\machine.txt och anvand det i ALLT du gor: KORLOGG,
+progress, push, och nar du ramar in dina svar (borja "💻 M<id>", avsluta "💻 M<id> . Endgame").
+Ditt id ar ALLTID exakt det som star i machine.txt (satt av setup-machine.ps1, atomart tilldelat
+sa tva datorer aldrig far samma). Hitta ALDRIG pa ett eget id, gissa aldrig, och andra det aldrig
+for hand. Star det inget id: kor setup-machine.ps1 (STEG B), lat den tilldela, las sedan om filen.
+NAMNGE DIG OCKSA: dop chatten med set_session_title till exakt "M<id> Endgame" sa fort du vet
+ditt id. Elliot kor sex datorer samtidigt och maste kunna se i sessionslistan vilken maskin
+som ar vilken - en chatt som heter nagot annat ar en chatt han inte hittar.
+
+STEG D - Las (i denna ordning, de gar fore din egen bedomning):
+<REPO>\PROTOCOL.md, <REPO>\memory\MEMORY.md, <REPO>\runbook\00-START-HAR.txt,
+<REPO>\runbook\03-HARDA-GRINDAR.txt (G1-G9, bygget STOPPAR vid saknat moment),
+<REPO>\runbook\05-SLUTKONTROLL.txt (G9: slutkontroll-svepet), <REPO>\runbook\04-FEEDBACK-LOOP.txt.
+
+STEG E - Kor: powershell -ExecutionPolicy Bypass -File <REPO>\tools\sync.ps1 pull
+Las NYHETER som skrivs ut. Kor sedan slutkontroll-svepet (se 05-SLUTKONTROLL.txt) och
+atgarda ev. FAIL pa produkter du byggt.
+
+STEG E2 - KONTROLLERA DE TVA INLOGGNINGARNA (det har brukar ga fel och kostade ett helt
+arbetspass 2026-09-18): (1) Claude-SIDOPANELEN i Chrome maste vara inloggad pa SAMMA
+Claude-konto som den har sessionen, annars ser du ingen webblasare alls
+(list_connected_browsers ger []). (2) claude.ai-FLIKEN i samma webblasare maste vara
+westrosbusiness@gmail.com, dar koncept-projektet "Image ads NEW products" ligger
+(01a05086-a160-775f-b7e2-e0bfe20c1b27; det gamla 01a050a9... tillhor annat konto och ger
+no-permission). De tva FAR skilja sig at. Verifiera nummer 2 via https://claude.ai/api/organizations
+INNAN du genererar image ads - annars branner du en korning. Ger list_connected_browsers []:
+sag i EN mening att Elliot behover oppna sidopanelen och jobba vidare med annat - starta INTE
+om hans Chrome och grav INTE i Local State/Secure Preferences (river hans fonsterlayout, loser
+inget; se feedback_ror_inte_elliots_chrome_flikar). Maste du anda starta Chrome: kvotera
+profilen ('--profile-directory="Profile 1"'), okvoterat hamnar du i Default.
+
+STEG F - Ta nasta produkt ur Accepted Elliot (Product Finder) som ingen annan claimat.
+Claima med sync.ps1 claim <handle> (exit 2 = upptagen, ta nasta). Preflight-kolla handlen i
+Shopify. Bygg enligt <REPO>\runbook\STEGKEDJA.txt fran STEG 0. Under bygget: pull fore VARJE
+STEG, progress efter VARJE STEG, push lardomar DIREKT, kor G9 SLUTKONTROLL fore Rotche-
+overlamning (ett FAIL = ej klar), release nar produkten ar klar.
+
+STEG G - PRODUKTJAKTEN (galler ALLA maskiner, 2026-09-16): kontrollera med list_scheduled_tasks
+att den schemalagda tasken "daily-winning-product-finder" finns pa den har datorn. Saknas den: skapa
+den SJALV med create_scheduled_task (taskId daily-winning-product-finder, title "Daily winning product
+finder", cronExpression "0 4 * * *", prompt EXAKT: "Las C:\soldahl-machine\produktjakt\START.md och
+folj den."). Kor sedan en gang: powershell -ExecutionPolicy Bypass -File <REPO>\tools\jakt.ps1 start
+och verifiera att du har ett snitt (annars: ta den lediga raden i produktjakt\marknader.json, pusha).
+Modell/permission (Opus 4.8 Medium, Bypass) satts av Elliot i taskens editor - skriv i JAKTLOGG att
+tasken ar skapad sa han vet att den ska stallas in. Las produktjakt\PROTOKOLL.md.
+
+Efter VARJE synlig andring pa en produkt: ladda om den skarpa sidan och visa resultatet (skarmdump), sag aldrig bara "fixat". Ny produkt: lager 99999 + CONTINUE, taxable=false.
+Full autonomi. Kor och rapportera i slutet. Fraga aldrig "How do you want to proceed" -
+det finns alltid ett oppet jobb (nasta produkt), och saknas nagot bootstrappar du det sjalv.
+
+SJALVGAENDE + SJALVLARANDE (bryts aldrig): Be ALDRIG om "kor/klart/sag till/vill du att jag".
+Bara PUBLICERA stoppar (G5/COGS ar INTE stopp sedan 2026-09-16); allt annat beslutar du sjalv, loggar i
+builds/<handle>/BOTTLENECKS.txt och FORTSATTER. I samma stund du lar dig nagot, far feedback,
+gor ett fel eller loser ett hinder: skriv det till DELADE minnet DIREKT (memory-fil med vad hande
++ orsak/losning + vad du gor annorlunda, nyckelord i facit/regler.json, rad i NYHETER.txt, push)
+INNAN du gar vidare - aldrig vid slutet. Las NYHETER + facit vid start och fore varje STEG; de
+andra maskinernas laxor ar dina, upprepa aldrig ett kant misstag. Fastnar du: byt vag/metod helt
+fore du ens overvager att fraga. Fraga ar sista utvag, bara vid akta externt hinder (t.ex.
+inloggning du inte far gora), och da loggar du det och fortsatter med allt annat.
+- - - - - - - - - - klipp har - - - - - - - - - -
+
+Det ar den enda prompten. Allt annat far maskinen sjalv ur repot. Den funkar aven om DEL 1
+inte hunnits med: maskinen klonar repot och kor setup sjalv, och fragar aldrig dig.
+
+
+=====================================================================
+ DEL 3. SA HALLER MASKINERNA SIG UPPDATERADE, UTAN PROMPTS
+=====================================================================
+
+Ingen ska behova skicka "kom ihag att ..." till fem datorer. Det loses
+sa har, och det ar redan byggt:
+
+  NYHETER.txt i repot.
+     Andrar nagon ett verktyg, en regel, ett steg i runbooken, hur bilder
+     genereras eller hur copy skrivs: skriv en rad i NYHETER.txt.
+     "sync.ps1 pull" skriver ut varje nyhet en maskin inte sett an,
+     automatiskt, och maskinerna kor pull fore varje STEG. Ingen kan
+     missa en andring. Nyheterna syns ocksa pa oversiktssidan.
+
+  Minnen, facit, runbook och skills ar SAMMA filer pa alla maskiner.
+     setup-machine.ps1 lankar Claudes egna mappar till repot. Pushar en
+     maskin en lardom har alla den vid nasta pull.
+
+  Facit-grinden + kanselsprot (facit/facit_hook.py, kopplas av setup-machine).
+     Vid VARJE meddelande: (a) matchar nyckelord i Elliots text/URL och tvingar
+     in ratt facit-fil i kontexten, och (b) gor git fetch och skriver ut de
+     olasta NYHETER-rubrikerna om origin ligger fore, med order att pulla FORE
+     nasta steg. Maskinen kanner alltsa av ny feedback mitt i bygget, utan att
+     nagon promptar den. Starta om Claude Code efter setup sa hooken laddas.
+
+  Feedback-loopen ar TVINGAD (runbook/04-FEEDBACK-LOOP.txt).
+     Ger Elliot feedback ("fel", "saknas", "gor aldrig", "fran och med nu"...):
+     skriv regeln i ratt fil -> nyckelord i facit/regler.json -> rad i
+     NYHETER.txt -> sync.ps1 push, INNAN du sager "fixat". sync.ps1 push VAGRAR
+     en ny minnes-/runbook-fil utan nyckelord. En rapport eller chattkommentar
+     racker inte - da lar sig ingen annan maskin nagot.
+
+  Harda grindar G1-G9 (runbook/03-HARDA-GRINDAR.txt).
+     Bygget STOPPAR om ett obligatoriskt moment saknas: PERSONBILDER ALLTID i
+     ChatGPT (aldrig Firefly; inga AI-avslojare som krukvaxt/lampa/glow/stel person,
+     loggor pa klader ar OK, produkten i RATT skala mot handerna), ren produkt utan
+     person far goras i Firefly,
+     jamforelsetabell med bara konkurrenter + BILD per kolumn, spec-/recensionsbild
+     nar de anvands, COGS beraknad och rabattkoder skapade UTAN godkannande, koherent styckpris,
+     och G9 SLUTKONTROLL (kvalitetskoll.py mot Shopify) fore Rotche-overlamning.
+     Facit = de forsta produkterna, 10 av 10. Att flagga och kora vidare ar forbjudet.
+
+     ⛔ LIVE-KRAV (2026-09-17): en produkt vars LP-lank delas med nagon MASTE vara
+     ACTIVE *och* publicerad till Webbshop + Shop. ACTIVE ensamt ger 404 i butiken.
+     Oppna alltid lanken sjalv och se att den laddar innan du sager att den ar klar.
+     ⛔ PRIS: Soldahls charmpriser slutar ALLTID pa 9 (369/559/749), aldrig pa 7.
+
+  Slutkontroll G9 (runbook/05-SLUTKONTROLL.txt, tools/kvalitetskoll.py).
+     Shopify ar sanningen: skriptet laser produkten och sager PASS/FAIL sa ingen
+     produkt slapps med saknade recensioner (consumio_reviews), jamforelsebilder,
+     spec-bild, review-bild osv. Kor svepet vid sessionsstart (atgarda dina egna
+     FAIL) och G9 fore varje Rotche-overlamning. Gemensam lista: builds/KVALITETSKOLL-RAPPORT.txt.
+
+  Claims ar git-atomara.
+     Tva maskiner kan inte ta samma produkt. Den som forlorar far exit 2.
+
+  Ingen maskin ror Shopify-temat.
+     Alla produkter anvander samma mall, sa det finns inget att krocka om.
+
+  Rabattkoder: Shopify avvisar dubbletter hart, maskinen tar ett annat
+     suffix.
+
+  Slar en dator i taket mitt i ett bygge tar en annan over:
+     sync.ps1 resume <handle>   visar vad forra maskinen hann
+     sync.ps1 claim <handle>    claim aldre an 6 h far overtas
+     Underlaget ligger i builds\<handle>\ . Shopify ar sanningen,
+     statusfilen bara en genvag.
+
+
+=====================================================================
+ DEL 4. PRODUKTJAKTEN (Daily winning product finder) PA DENNA MASKIN
+=====================================================================
+
+Varje maskin jagar produkter i SITT snitt (produktjakt\marknader.json), samma
+system som byggena: git-atomara claims (tools\jakt.ps1), NYHETER, chatt i
+produktjakt\JAKTLOGG.txt. Manniskan gor EN sak:
+
+4.1  Skapa den schemalagda tasken i Claude Code-appen (Tasks i sidofaltet):
+       Namn:     Daily winning product finder
+       Tid:      04:00 varje dag
+       Modell:   Opus 4.8, reasoning Medium (Elliots beslut 2026-09-14)
+       Prompt:   Las C:\soldahl-machine\produktjakt\START.md och folj den.
+       Permission mode: Bypass permissions (annars stannar den vid forsta verktyget)
+     Det ar hela prompten. Allt annat ligger i START.md i repot, sa en andring
+     dar nar alla datorer vid nasta korning.
+     ALTERNATIV: du behover inte skapa den for hand. Endgame-prompten (DEL 2,
+     STEG G) far maskinen att skapa tasken sjalv med create_scheduled_task vid
+     nasta session. Det enda du da gor i appen ar att stalla modell (Opus 4.8
+     Medium) och permission mode (Bypass) pa tasken - det kan Claude inte.
+
+4.2  Logga in i den Chrome dar tillagget sitter, pa
+       app.winninghunter.com   (Elliots Standard-konto, delat)
+       creative-loop.pages.dev (westrosbusiness@gmail.com)
+     Claude loggar aldrig in sjalv. Ar nagon utloggad kor den de vagor som inte
+     behover den och skriver i JAKTLOGG vad som saknades.
+
+4.3  Kor en gang for hand for att se att maskinen har ett snitt:
+       powershell -ExecutionPolicy Bypass -File C:\soldahl-machine\tools\jakt.ps1 start
+     Star det "INGET SNITT": ta den lediga raden i marknader.json, skriv in
+     maskinens id, sync.ps1 push "M5 snitt", klart.
+
+=====================================================================
+ OM EN MASKIN VARIT AV ETT TAG
+=====================================================================
+
+Den behover ingen ny installation och ingen lang prompt. Skicka bara:
+
+- - - - - - - - - - klipp har - - - - - - - - - -
+Kor powershell -ExecutionPolicy Bypass -File C:\soldahl-machine\tools\sync.ps1 pull
+och las nyheterna den skriver ut. Kor sedan sync.ps1 hello, den paminner om
+du haller ett claim. Fortsatt darefter enligt PROTOCOL.md.
+- - - - - - - - - - klipp har - - - - - - - - - -
+
+
+=====================================================================
+ OM NAGOT KRANGLAR
+=====================================================================
+
+"Hittar inte projektkatalogen"
+   Du hoppade over 1.2. Starta Claude Code en gang i ratt mapp, stang,
+   kor om scriptet.
+
+"SAKNAS git" / "SAKNAS Python"
+   Installera, oppna ett NYTT PowerShell-fonster, kor om.
+
+"Author identity unknown"
+   Git-identiteten saknas. setup-machine.ps1 satter den, kor om det.
+
+claim ger exit 2
+   Inte ett fel. Produkten ar upptagen. Ta nasta.
+
+Varning om att en lank pekar mot ett annat repo
+   En gammal klon ligger kvar. Ta bort lanken scriptet skriver ut, kor om.
+
+"STOPP: denna push RADERAR delad kunskap"
+   Sparren fungerar. Ta tillbaka filen med  git checkout HEAD -- <fil>
+   Tvinga aldrig igenom raderingen om du inte VET att filen ska bort.
+
+Claude vet inte vad den ska gora
+   Den laste inte PROTOCOL.md. Skicka: "Las C:\soldahl-machine\PROTOCOL.md
+   och folj den. Ditt maskin-id star i C:\soldahl-machine\machine.txt."
+
+
+=====================================================================
+ HALL DEN HAR FILEN UPPDATERAD
+=====================================================================
+
+Andras nagot i hur en maskin kopplas in eller vad forsta prompten ska
+saga: uppdatera DEN HAR filen i samma push. Den ar det enda stallet dar
+onboardingen finns beskriven, och en foraldrad guide ar varre an ingen.
